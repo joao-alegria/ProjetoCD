@@ -60,6 +60,7 @@ public class Student extends Thread{
         try{
             walk();
             int pos=table.enterRestaurant();
+            
             if(pos==0){
                 this.first=true;
                 this.last=false;
@@ -72,22 +73,21 @@ public class Student extends Thread{
             }
 
             table.readMenu();
-            if(last){
-                table.full();
-            }
+            //if(last){
+            //    table.full();
+            //}
             table.choose();
             if(first){
                 while(!table.allChose()){
                     table.prepareOrder();
                 }
-                table.prepareOrder();
                 bar.signalWaiter();
                 table.describeOrder();
             }
             table.chat();	// comida chegou alertado pelo waiter
             for(int i=0; i<N; i++){ //3 vezes
-                table.eat();
-                if(table.lastToEat() && i<N-1){
+                int pos_eating=table.eat();
+                if(pos_eating==N && i<N-1){
                     bar.signalWaiter();
                     table.chat();
                 }else{
@@ -96,6 +96,7 @@ public class Student extends Thread{
 
             }
             if(last){
+                order.enableGetBill();
                 bar.signalWaiter();
                 table.payBill();
                 goHome();

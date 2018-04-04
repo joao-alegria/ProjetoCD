@@ -11,15 +11,15 @@ public class Bar {
 	}
 
 	public synchronized Event lookAround() throws MyException {
-		order.reset();
-		try {
-			while (lookAround) {
-				wait();
-			}
-		} catch (InterruptedException e) {
-			throw new MyException("Error: Not looking around.");
-		}
-		return order.getEvent();
+            //order.reset();
+            try {
+                    while (lookAround) {
+                        wait();
+                    }
+            } catch (InterruptedException e) {
+                    throw new MyException("Error: Not looking around.");
+            }
+            return order.getEvent();
 	}
 
 	public synchronized void prepareBill() throws MyException{
@@ -39,8 +39,8 @@ public class Bar {
 	//}
 
 	public synchronized void signalWaiter() {
-		lookAround = false;
-		notifyAll();
+            lookAround = false;
+            notifyAll();
 	}
 
 }

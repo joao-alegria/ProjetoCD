@@ -73,6 +73,7 @@ public class Waiter extends Thread{
                     //    bar.clean();
                     //    run=false;
                 }
+                
             }
         }catch(MyException e){
             System.out.println(e);
