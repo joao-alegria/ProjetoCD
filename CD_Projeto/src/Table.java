@@ -9,75 +9,93 @@
  * @author joao-alegria
  */
 public class Table {
+    private Order order;
+    //private boolean lastMeal;
+    //private boolean lastArriving;
+    private int atTable=0;
+    
+    private boolean noMenu=true;
+    
+    public Table(Order o){
+        order=o;
+    }
 
-    boolean lastMeal;
-    boolean lastArriving;
+    public synchronized void saluteClient() {
+        noMenu=false;
+        notifyAll();
+        noMenu=true;
+    }
 
-    void saluteClient() {
+    public synchronized void getOrder() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    void getOrder() {
+    public synchronized void servePortion() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    void servePortion() {
+    public synchronized void presentBill() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    void presentBill() {
+    public synchronized void waitPayment() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    void waitPayment() {
+    public synchronized int enterRestaurant() throws MyException{
+        int aux=atTable++;
+        order.enablePresentMenu();
+        try{
+            while(noMenu){
+                wait();
+            }
+        }catch(InterruptedException e){
+            throw new MyException("Error: Not watching the news.");
+        }
+        return aux;
+    }
+
+    public synchronized void readMenu() throws MyException{
+        try{
+            Thread.sleep((long)(1+100*Math.random()));
+        }catch(InterruptedException e){
+            throw new MyException("Error: Not reading menu.");
+        }
+    }
+
+    public synchronized void full() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    void sit() {
+    public synchronized void choose() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    void readMenu() {
+    public synchronized boolean allChose() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    void full() {
+    public synchronized void prepareOrder() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    void choose() {
+    public synchronized void describeOrder() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    boolean allChose() {
+    public synchronized void chat() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    void prepareOrder() {
+    public synchronized void eat() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    void describeOrder() {
+    public synchronized boolean lastToEat() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    void chat() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    void eat() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    boolean lastToEat() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    void payBill() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    void waitReceipt() {
+    public synchronized void payBill() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     

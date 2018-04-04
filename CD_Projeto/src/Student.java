@@ -10,16 +10,20 @@
  */
 public class Student extends Thread{
 
-    private void walk() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private void walk() throws MyException{
+        try{
+            Thread.sleep((long)(1+300*Math.random()));
+        }catch(InterruptedException e){
+            throw new MyException("Error: Not walking.");
+        }
     }
 
-    private void enterRestaurant() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    private void goHome() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private void goHome() throws MyException{
+        try{
+            Thread.sleep((long)(1+200*Math.random()));
+        }catch(InterruptedException e){
+            throw new MyException("Error: Not going home.");
+        }
     }
     
     static enum state {
@@ -35,50 +39,71 @@ public class Student extends Thread{
     
     private Table table;
     private Bar bar;
+    private Order order;
     private boolean first;
     private boolean last;
     private state st;
+    private int N, ID;
     
-    
-    public Student(Bar bar, Table table){
+    public Student(Bar b, Table t, Order o, int id){
         this.st= state.GOING_TO_THE_RESTAURANT;
-        this.table = table;
-        this.bar = bar;
+        this.table = t;
+        this.bar = b;
+        this.order=o;
+        this.N=o.getNumStudents();
+        this.ID=id;
     }
     
     
     @Override
     public void run(){
-        walk();
-        table.sit();
-        table.readMenu();
-        if(last){
-            table.full();
-        }
-        table.choose();
-        if(first){
-            while(!table.allChose()){
+        try{
+            walk();
+            int pos=table.enterRestaurant();
+            if(pos==0){
+                this.first=true;
+                this.last=false;
+            }else if(pos==N-1){
+                this.first=false;
+                this.last=true;
+            }else{
+                this.first=false;
+                this.last=false;
+            }
+
+            table.readMenu();
+            if(last){
+                table.full();
+            }
+            table.choose();
+            if(first){
+                while(!table.allChose()){
+                    table.prepareOrder();
+                }
                 table.prepareOrder();
-            }
-            table.prepareOrder();
-            bar.signalWaiter();
-            table.describeOrder();
-        }
-        table.chat();	// comida chegou alertado pelo waiter
-        for(int i=0; i<N; i++){ //3 vezes
-            table.eat();
-            if(table.lastToEat() && i<N-1){
                 bar.signalWaiter();
-                table.chat();
+                table.describeOrder();
             }
-        }
-        if(table.lastArriving){
-            bar.signalWaiter();
-            table.payBill();
-            table.waitReceipt();
-            goHome();
-        }else{
-            goHome();
+            table.chat();	// comida chegou alertado pelo waiter
+            for(int i=0; i<N; i++){ //3 vezes
+                table.eat();
+                if(table.lastToEat() && i<N-1){
+                    bar.signalWaiter();
+                    table.chat();
+                }else{
+                    table.chat();
+                }
+
+            }
+            if(last){
+                bar.signalWaiter();
+                table.payBill();
+                goHome();
+            }else{
+                goHome();
+            }
+        }catch(MyException e){
+            System.out.println(e);
         }
     }
 }

@@ -21,30 +21,39 @@ public class Chef extends Thread{
     private state st;
     private Kitchen kitchen;
     private Bar bar;
+    private Order order;
+    private int M, N;
     
-    public Chef(Kitchen kit, Bar bar){
+    public Chef(Kitchen k, Bar b, Order o){
         this.st=state.WAITING_FOR_AN_ORDER;
-        this.kitchen=kit;
-        this.bar=bar;
+        this.kitchen=k;
+        this.bar=b;
+        this.order=o;
+        this.M=o.getDishPerStudents();
+        this.N=o.getNumStudents();
     }
     
     @Override
     public void run(){
-        kitchen.watchNews();
-        kitchen.startPrep();
-        for(int i=0; i<M; i++){
-            kitchen.proceedToPresent();
-            for(int s=0; s<N; s++){
-		        bar.signalWaiter();
-		        kitchen.standBy();
-		        if(!kitchen.allPortionsDelivered()){
-			        kitchen.haveNextPortionReady();
+        try{
+            kitchen.watchNews();
+            kitchen.startPrep();st=state.PREPARING_THE_COURSE;
+            for(int i=0; i<M; i++){
+                kitchen.proceedToPresent();st=state.DISHING_THE_PORTIONS;
+                for(int s=0; s<N; s++){
+                    bar.signalWaiter();st=state.DELIVERING_THE_PORTIONS;
+                    //kitchen.standBy();
+                    if(!kitchen.allPortionsDelivered()){
+                            kitchen.haveNextPortionReady();st=state.DISHING_THE_PORTIONS;
+                    }
                 }
+                if(!kitchen.allOrdersDelivered()){
+                    kitchen.contPrep();st=state.PREPARING_THE_COURSE;
+                }
+            kitchen.cleanup();st=state.CLOSING_SERVICE;
             }
-            if(!kitchen.allOrdersDelivered()){
-                kitchen.contPrep();
-            }
-        kitchen.cleanup();
+        }catch(MyException e){
+            System.out.println(e);
         }
     }
 }

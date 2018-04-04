@@ -1,34 +1,46 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /**
  *
  * @author joao-alegria
  */
 public class Bar {
-    
-    public Event lookAround(){
-        this.wait();
-        return this.getEvent();
-    }
+	private Order order;
+	private boolean lookAround = true;
 
-    void prepareBill() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+	public Bar(Order o) {
+		order = o;
+	}
 
-    void clean() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+	public synchronized Event lookAround() throws MyException {
+		order.reset();
+		try {
+			while (lookAround) {
+				wait();
+			}
+		} catch (InterruptedException e) {
+			throw new MyException("Error: Not looking around.");
+		}
+		return order.getEvent();
+	}
 
-    Event getEvent() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+	public synchronized void prepareBill() throws MyException{
+            try{
+                Thread.sleep((long) Math.random() * 100 + 1);
+            }catch(InterruptedException e){
+                throw new MyException("Error: Not preparing bill.");
+            }
+	}
 
-    void signalWaiter() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
+	// public synchronized void clean() {
+	// order.enableCleanUp();
+	// }
+
+	//private synchronized Event getEvent() {
+	//	return order.getEvent();
+	//}
+
+	public synchronized void signalWaiter() {
+		lookAround = false;
+		notifyAll();
+	}
+
 }

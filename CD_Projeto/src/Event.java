@@ -13,5 +13,5 @@ public enum Event {
     takeOrder,
     foodReady,
     getBill,
-    cleanUp
+    //cleanUp
 }
