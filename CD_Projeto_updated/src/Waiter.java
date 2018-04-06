@@ -6,7 +6,7 @@
 
 /**
  *
- * @author joao-alegria eu 
+ * @author joao-alegria eu mesmo 2
  */
 public class Waiter extends Thread{
     
@@ -41,18 +41,20 @@ public class Waiter extends Thread{
         try{
             boolean run=true;
             while(run){
+            	st=state.APPRAISING_SITUATION;
+            	order.log("Waiter: "+st.toString());
                 switch(bar.lookAround()){
                     case presentMenu:
-                        System.out.println(state.PRESENTING_THE_MENU.toString());
                         st=state.PRESENTING_THE_MENU;
+                        order.log("Waiter: "+st.toString());
                         table.saluteClient();
                         bar.returnBar();
                         //kitchen.returnBar();
                         break;
 
                     case takeOrder:
-                        System.out.println(state.TAKING_THE_ORDER.toString());
                         st=state.TAKING_THE_ORDER;
+                        order.log("Waiter: "+st.toString());
                         table.getOrder();
                         kitchen.handOrder();
                         bar.returnBar();
@@ -60,8 +62,8 @@ public class Waiter extends Thread{
                         break;
 
                     case foodReady:
-                        System.out.println(state.WAITING_FOR_PORTION.toString());
                         st=state.WAITING_FOR_PORTION;
+                        order.log("Waiter: "+st.toString());
                         //for(int s=0; s<N; s++){
                             kitchen.collectPortion();
                             table.servePortion();
@@ -71,17 +73,15 @@ public class Waiter extends Thread{
                         break;
 
                     case getBill:
-                        System.out.println(state.PROCESSING_THE_BILL.toString());
                         st=state.PROCESSING_THE_BILL;
+                        order.log("Waiter: "+st.toString());
+                        order.log("Waiter: "+st.toString());
                         bar.prepareBill();
                         table.presentBill();
                         table.waitPayment();
                         run=false;
                         break;
 
-                    //case cleanUp:
-                    //    bar.clean();
-                    //    run=false;
                 }
                 
             }

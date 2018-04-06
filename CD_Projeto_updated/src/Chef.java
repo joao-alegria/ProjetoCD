@@ -36,26 +36,38 @@ public class Chef extends Thread{
     @Override
     public void run(){
         try{
+        	order.log("Chef: "+st.toString());
             kitchen.watchNews();
-            kitchen.startPrep();st=state.PREPARING_THE_COURSE;
+            st=state.PREPARING_THE_COURSE;
+            order.log("Waiter: "+st.toString());
+            kitchen.startPrep();
             for(int i=0; i<M; i++){
-                kitchen.proceedToPresent();//st=state.DISHING_THE_PORTIONS;
+            	st=state.DISHING_THE_PORTIONS;
+            	order.log("Waiter: "+st.toString());
+                kitchen.proceedToPresent();
                 for(int s=0; s<N; s++){
+                	st=state.DELIVERING_THE_PORTIONS;
+                    order.log("Waiter: "+st.toString());
                     bar.signalWaiter();//st=state.DELIVERING_THE_PORTIONS;
                     //kitchen.standBy();
                     if(!kitchen.allPortionsDelivered()){
                         st=state.DISHING_THE_PORTIONS;
+                        order.log("Waiter: "+st.toString());
                         kitchen.haveNextPortionReady();
-                        st=state.DELIVERING_THE_PORTIONS;
+                        
                     
                         //bar.signalWaiter();//st=state.DELIVERING_THE_PORTIONS;
                     }
                 }
                 if(!kitchen.allOrdersDelivered()){
-                    kitchen.contPrep();st=state.PREPARING_THE_COURSE;
+                	st=state.PREPARING_THE_COURSE;
+                	order.log("Waiter: "+st.toString());
+                    kitchen.contPrep();
                 }
             }
-            kitchen.cleanup();st=state.CLOSING_SERVICE;
+            st=state.CLOSING_SERVICE;
+            order.log("Waiter: "+st.toString());
+            kitchen.cleanup();
         }catch(MyException e){
             System.out.println(e);
         }

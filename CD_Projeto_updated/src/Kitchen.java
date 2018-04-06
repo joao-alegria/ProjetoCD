@@ -48,6 +48,7 @@ public class Kitchen {
             throw new MyException("Error: Not presenting");
         }
         portions+=1;
+        notifyAll();
         
         order.enableFoodReady();
     }
@@ -63,7 +64,7 @@ public class Kitchen {
     //}
     
     public synchronized boolean allPortionsDelivered(){
-        if(portions==N){
+        if(portionsDelivered==N){
             return true;
         }else{
             return false;
@@ -82,7 +83,7 @@ public class Kitchen {
             throw new MyException("Error: Not presenting");
         }
         portions+=1;
-        notifyAll();
+        //notifyAll();
         
         /*try{
             while(waiter){
@@ -98,7 +99,6 @@ public class Kitchen {
     }
     
     public synchronized boolean allOrdersDelivered(){
-    	System.out.println(ordersDelivered + " "+M);
         if(ordersDelivered==M){
             return true;
         }else{
@@ -114,6 +114,7 @@ public class Kitchen {
         }
         ordersDelivered+=1;
         portionsDelivered=0;
+        portions=0;
     }
     
     public synchronized void cleanup()  throws MyException{
@@ -129,14 +130,7 @@ public class Kitchen {
         notifyAll();
     }
 
-    public synchronized void collectPortion() throws MyException{ //waiter
-        try{
-            while(portions<=portionsDelivered){
-                wait();
-            }
-        }catch(InterruptedException e){
-            throw new MyException("Error: Not collecting portion.");
-        }
+    public synchronized void collectPortion() { //waiter
         portionsDelivered+=1;
     }
 }

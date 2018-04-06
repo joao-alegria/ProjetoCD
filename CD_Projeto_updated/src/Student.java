@@ -59,7 +59,10 @@ public class Student extends Thread{
     @Override
     public void run(){
         try{
+        	order.log("Student "+ID+": "+st.toString());
             walk();
+            st= state.TAKING_A_SEAT_AT_THE_TABLE;
+            order.log("Student "+ID+": "+st.toString());
             int pos=table.enterRestaurant();
             bar.signalWaiter();
             table.waitMenu();
@@ -74,6 +77,8 @@ public class Student extends Thread{
                 this.last=false;
             }
             
+            st= state.SELECTING_THE_COURSES;
+            order.log("Student "+ID+": "+st.toString());
             table.readMenu();
             //if(last){
             //    table.full();
@@ -81,31 +86,47 @@ public class Student extends Thread{
             table.choose();
             if(first){
                 while(!table.allChose()){
+                	st= state.ORGANIZING_THE_ORDER;
+                	order.log("Student "+ID+": "+st.toString());
                     table.prepareOrder();
                 }
                 table.giveOrder();
                 bar.signalWaiter();
                 table.describeOrder();
             }
+            st= state.CHATTING_WITH_COMPANIONS;
+            order.log("Student "+ID+": "+st.toString());
             table.chat();	// comida chegou alertado pelo waiter
             for(int i=0; i<M; i++){ //3 vezes
+            	st= state.ENJOYING_THE_MEAL;
+            	order.log("Student "+ID+": "+st.toString());
                 int pos_eating=table.eat();
                 if(i<M-1){
                     if(pos_eating==N){
                         table.allFinished();
-                        bar.signalWaiter();
+                        //bar.signalWaiter();
+                        st= state.CHATTING_WITH_COMPANIONS;
+                        order.log("Student "+ID+": "+st.toString());
                         table.chat();
                     }else{
+                    	st= state.CHATTING_WITH_COMPANIONS;
+                    	order.log("Student "+ID+": "+st.toString());
                         table.chat();
                     }
                 }
             }
             if(last){
+            	st= state.PAYING_THE_MEAL;
+            	order.log("Student "+ID+": "+st.toString());
             	table.getBill();
                 bar.signalWaiter();
                 table.payBill();
+                st= state.GOING_HOME;
+                order.log("Student "+ID+": "+st.toString());
                 goHome();
             }else{
+            	st= state.GOING_HOME;
+            	order.log("Student "+ID+": "+st.toString());
                 goHome();
             }
         }catch(MyException e){

@@ -15,7 +15,7 @@ public class DinnerManager {
 
 		Chef chefe = new Chef(kitchen, bar, order);
 		Waiter empregado = new Waiter(kitchen, bar, table, order);
-		Student[] estudantes = new Student[7];
+		Student[] estudantes = new Student[M];
 		for (int i = 0; i < M; i++) {
 			estudantes[i] = new Student(bar, table, order, i + 1);
 		}
@@ -41,6 +41,7 @@ public class DinnerManager {
 		}
 		System.out.println("FIM!");
 		order.closeLog();
+		
 	}
 
 }

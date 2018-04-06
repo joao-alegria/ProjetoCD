@@ -81,7 +81,7 @@ public class Order {
             return aux;
 	}
 
-	public synchronized void logger(String s) {
+	public synchronized void log(String s) {
 		writer.writelnString(s);
 	}
 
