@@ -15,8 +15,8 @@ public class Table {
     //private boolean lastArriving;
     private int atTable=0, choosen=0, finishedEating=0, served=0;
     
-    private boolean noMenu=true, descOrder=true, chat=true, bill=true, waitPay=true, menuWait=false;
-    private boolean waiter=false;
+    private boolean noMenu=true, descOrder=true, chat=true, bill=true, waitPay=true, menuWait=false, allFinished=false;
+    //private boolean waiter=false;
     
     public Table(Order o){
         order=o;
@@ -36,19 +36,18 @@ public class Table {
     }
     
     public synchronized int enterRestaurant() throws MyException{
-        try{
-            while(waiter){
-                wait();
-            }
-        }catch(InterruptedException e){
-            throw new MyException("Error: Not entering.");
-        }
-        waiter=true;
-        int aux=atTable;
+        //try{
+        //    while(waiter){
+        //        wait();
+        //    }
+        //}catch(InterruptedException e){
+        //    throw new MyException("Error: Not entering.");
+        //}
+        //waiter=true;
         atTable=atTable+1;
         order.enablePresentMenu();
         noMenu=true;
-        return aux;
+        return atTable;
     }
     
     public synchronized void waitMenu() throws MyException{
@@ -108,7 +107,7 @@ public class Table {
     }
     
     public synchronized void giveOrder(){
-        waiter=true;
+        //waiter=true;
         order.enableTakeOrder();
     }
 
@@ -134,21 +133,22 @@ public class Table {
     }
 
     public synchronized void servePortion() throws MyException{
-        if(served==0){
-            chat=false;
-            notifyAll();
-        }
+    	allFinished=true;
         try{
             Thread.sleep((long)(1+80*Math.random()));
         }catch(InterruptedException e){
             throw new MyException("Error: Not serving portion.");
         }
         served+=1;
-
+        notifyAll();
         
         if(served==N){
+        	allFinished=true;
+        	chat=false;
+            notifyAll();
+            
             try{
-                while(finishedEating!=N){
+                while(allFinished){
                     wait();
                 }
             }catch(InterruptedException e){
@@ -157,28 +157,21 @@ public class Table {
         }
     }
 
-    public synchronized void presentBill() {
-        bill=false;
-        notifyAll();
-    }
-
-    public synchronized void waitPayment() throws MyException{
-        try{
-            while(waitPay){
-                wait();
-            }
-        }catch(InterruptedException e){
-            throw new MyException("Error: Not chating.");
-        }
-    }
-
-    public synchronized void returnBar(){
+    /*public synchronized void returnBar(){
         waiter=false;
         notifyAll();
-    }
+    }*/
 
     public synchronized void chat() throws MyException{
-        chat=true;
+        
+    	try{
+	        while(allFinished){
+	            wait();
+	        }
+	    }catch(InterruptedException e){
+	        throw new MyException("Error: Not waiting for everyone.");
+	    }
+    	
         try{
             while(chat){
                 wait();
@@ -189,40 +182,50 @@ public class Table {
     }
 
     public synchronized int eat() throws MyException{
+    	/*System.out.println("served "+served);
+    	
+    	System.out.println("?");*/
+    	
         try{
             Thread.sleep((long)(1+250*Math.random()));
         }catch(InterruptedException e){
             throw new MyException("Error: Not eating.");
         }
         finishedEating=finishedEating+1;
+        notifyAll();
+        //System.out.println(finishedEating + " " + N);
         
         /*try{
-            while(finishedEating<N){
-                wait();
-            }
-        }catch(InterruptedException e){
-            throw new MyException("Error: Not waiting after eating.");
-        }*/
-        System.out.println(finishedEating + " " + N);
-        notifyAll();
+	        while(finishedEating<N){
+	            wait();
+	        }
+	    }catch(InterruptedException e){
+	        throw new MyException("Error: Not waiting for everyone.");
+	    }*/
+        
         return finishedEating;
             
     }
 
-    //public synchronized boolean allFinished() {
-    //    order.enableFoodReady();
-    //    finishedEating=0;
-    //}
+    public synchronized void getBill() {
+    	allFinished=false;
+    	notifyAll();
+    	order.enableGetBill();
+    }
 
+    public synchronized void presentBill() {
+        bill=false;
+        notifyAll();
+    }
+    
     public synchronized void payBill() throws MyException{
-        try{
+    	try{
             while(bill){
                 wait();
             }
         }catch(InterruptedException e){
-            throw new MyException("Error: Not paying bill.");
+            throw new MyException("Error: Not getting bill.");
         }
-        
         try{
             Thread.sleep((long)(1+140*Math.random()));
         }catch(InterruptedException e){
@@ -233,9 +236,22 @@ public class Table {
         notifyAll();
         
     }
+    
+    public synchronized void waitPayment() throws MyException{
+        try{
+            while(waitPay){
+                wait();
+            }
+        }catch(InterruptedException e){
+            throw new MyException("Error: Not receiving payment.");
+        }
+    }
 
     public synchronized void allFinished() {
-        //order.enableFoodReady();
+    	chat=true;
+        order.enableFoodReady();
+    	allFinished=false;
+    	notifyAll();
         finishedEating=0;
         served=0;
     }

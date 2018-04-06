@@ -14,7 +14,7 @@ public class Kitchen {
     private int portionsDelivered=0, ordersDelivered=0, portions=0;
     private int N, M;
     
-    private boolean waiter=true;
+    //rivate boolean waiter=true;
     
     public Kitchen(Order o){
         order=o;
@@ -49,16 +49,6 @@ public class Kitchen {
         }
         portions+=1;
         
-        try{
-            while(waiter){
-                wait();
-            }
-        }catch(InterruptedException e){
-            throw new MyException("Error: Not presenting because waiter ocupied.");
-        }
-        
-        waiter=true;
-        
         order.enableFoodReady();
     }
     
@@ -73,17 +63,17 @@ public class Kitchen {
     //}
     
     public synchronized boolean allPortionsDelivered(){
-        if(portionsDelivered==N){
+        if(portions==N){
             return true;
         }else{
             return false;
         }
     }
     
-    public synchronized void returnBar(){
+    /*public synchronized void returnBar(){
         waiter=false;
         notifyAll();
-    }
+    }*/
     
     public synchronized void haveNextPortionReady() throws MyException{
         try{
@@ -104,10 +94,11 @@ public class Kitchen {
         
         waiter=true;*/
         
-        //order.enableFoodReady();
+        order.enableFoodReady();
     }
     
     public synchronized boolean allOrdersDelivered(){
+    	System.out.println(ordersDelivered + " "+M);
         if(ordersDelivered==M){
             return true;
         }else{
@@ -127,7 +118,7 @@ public class Kitchen {
     
     public synchronized void cleanup()  throws MyException{
         try{
-            Thread.sleep((long)(1+200*Math.random()));
+            Thread.sleep((long)(1+100*Math.random()));
         }catch(InterruptedException e){
             throw new MyException("Error: Not cleaning");
         }

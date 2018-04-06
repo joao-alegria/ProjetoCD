@@ -39,16 +39,17 @@ public class Chef extends Thread{
             kitchen.watchNews();
             kitchen.startPrep();st=state.PREPARING_THE_COURSE;
             for(int i=0; i<M; i++){
-                kitchen.proceedToPresent();st=state.DISHING_THE_PORTIONS;
-                bar.signalWaiter();st=state.DELIVERING_THE_PORTIONS;
+                kitchen.proceedToPresent();//st=state.DISHING_THE_PORTIONS;
                 for(int s=0; s<N; s++){
-                    //bar.signalWaiter();st=state.DELIVERING_THE_PORTIONS;
+                    bar.signalWaiter();//st=state.DELIVERING_THE_PORTIONS;
                     //kitchen.standBy();
-                    //if(!kitchen.allPortionsDelivered()){
+                    if(!kitchen.allPortionsDelivered()){
                         st=state.DISHING_THE_PORTIONS;
                         kitchen.haveNextPortionReady();
                         st=state.DELIVERING_THE_PORTIONS;
-                    //}
+                    
+                        //bar.signalWaiter();//st=state.DELIVERING_THE_PORTIONS;
+                    }
                 }
                 if(!kitchen.allOrdersDelivered()){
                     kitchen.contPrep();st=state.PREPARING_THE_COURSE;

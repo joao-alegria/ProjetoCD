@@ -8,7 +8,7 @@ public class DinnerManager {
 		int M = 7;
 		int N = 3;
 
-		Order order = new Order(M, N, "/home/joao-alegria/Desktop");
+		Order order = new Order(M, N, "C:\\Users\\joaop\\Desktop");
 		Kitchen kitchen = new Kitchen(order);
 		Bar bar = new Bar(order);
 		Table table = new Table(order);

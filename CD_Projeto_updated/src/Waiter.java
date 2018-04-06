@@ -6,7 +6,7 @@
 
 /**
  *
- * @author joao-alegria
+ * @author joao-alegria eu 
  */
 public class Waiter extends Thread{
     
@@ -46,8 +46,8 @@ public class Waiter extends Thread{
                         System.out.println(state.PRESENTING_THE_MENU.toString());
                         st=state.PRESENTING_THE_MENU;
                         table.saluteClient();
-                        table.returnBar();
-                        kitchen.returnBar();
+                        bar.returnBar();
+                        //kitchen.returnBar();
                         break;
 
                     case takeOrder:
@@ -55,19 +55,19 @@ public class Waiter extends Thread{
                         st=state.TAKING_THE_ORDER;
                         table.getOrder();
                         kitchen.handOrder();
-                        table.returnBar();
-                        kitchen.returnBar();
+                        bar.returnBar();
+                        //kitchen.returnBar();
                         break;
 
                     case foodReady:
                         System.out.println(state.WAITING_FOR_PORTION.toString());
                         st=state.WAITING_FOR_PORTION;
-                        for(int s=0; s<N; s++){
+                        //for(int s=0; s<N; s++){
                             kitchen.collectPortion();
                             table.servePortion();
-                            kitchen.returnBar();
-                        }
-                        table.returnBar();
+                            bar.returnBar();
+                        //}
+                        //table.returnBar();
                         break;
 
                     case getBill:

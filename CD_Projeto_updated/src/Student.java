@@ -63,10 +63,10 @@ public class Student extends Thread{
             int pos=table.enterRestaurant();
             bar.signalWaiter();
             table.waitMenu();
-            if(pos==0){
+            if(pos==1){
                 this.first=true;
                 this.last=false;
-            }else if(pos==N-1){
+            }else if(pos==N){
                 this.first=false;
                 this.last=true;
             }else{
@@ -78,7 +78,6 @@ public class Student extends Thread{
             //if(last){
             //    table.full();
             //}
-            //System.out.println("banana");
             table.choose();
             if(first){
                 while(!table.allChose()){
@@ -92,7 +91,6 @@ public class Student extends Thread{
             for(int i=0; i<M; i++){ //3 vezes
                 int pos_eating=table.eat();
                 if(i<M-1){
-                    System.out.println("1");
                     if(pos_eating==N){
                         table.allFinished();
                         bar.signalWaiter();
@@ -103,7 +101,7 @@ public class Student extends Thread{
                 }
             }
             if(last){
-                order.enableGetBill();
+            	table.getBill();
                 bar.signalWaiter();
                 table.payBill();
                 goHome();
