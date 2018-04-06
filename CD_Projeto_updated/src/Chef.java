@@ -21,38 +21,39 @@ public class Chef extends Thread{
     private state st;
     private Kitchen kitchen;
     private Bar bar;
-    private Order order;
+    private GeneralMemory mem;
     private int M, N;
     
-    public Chef(Kitchen k, Bar b, Order o){
-        this.st=state.WAITING_FOR_AN_ORDER;
-        this.kitchen=k;
-        this.bar=b;
-        this.order=o;
-        this.M=o.getDishPerStudents();
-        this.N=o.getNumStudents();
+    public Chef(Kitchen k, Bar b, GeneralMemory m){
+        st=state.WAITING_FOR_AN_ORDER;
+        kitchen=k;
+        bar=b;
+        mem=m;
+        M=m.getDishPerStudents();
+        N=m.getNumStudents();
+        mem.log("Creating Chef...");
     }
     
     @Override
     public void run(){
         try{
-        	order.log("Chef: "+st.toString());
+        	mem.log("Chef: "+st.toString());
             kitchen.watchNews();
             st=state.PREPARING_THE_COURSE;
-            order.log("Waiter: "+st.toString());
+            mem.log("Chef: "+st.toString());
             kitchen.startPrep();
             for(int i=0; i<M; i++){
             	st=state.DISHING_THE_PORTIONS;
-            	order.log("Waiter: "+st.toString());
+            	mem.log("Chef: "+st.toString());
                 kitchen.proceedToPresent();
                 for(int s=0; s<N; s++){
                 	st=state.DELIVERING_THE_PORTIONS;
-                    order.log("Waiter: "+st.toString());
+                    mem.log("Chef: "+st.toString());
                     bar.signalWaiter();//st=state.DELIVERING_THE_PORTIONS;
                     //kitchen.standBy();
                     if(!kitchen.allPortionsDelivered()){
                         st=state.DISHING_THE_PORTIONS;
-                        order.log("Waiter: "+st.toString());
+                        mem.log("Chef: "+st.toString());
                         kitchen.haveNextPortionReady();
                         
                     
@@ -61,12 +62,12 @@ public class Chef extends Thread{
                 }
                 if(!kitchen.allOrdersDelivered()){
                 	st=state.PREPARING_THE_COURSE;
-                	order.log("Waiter: "+st.toString());
+                	mem.log("Chef: "+st.toString());
                     kitchen.contPrep();
                 }
             }
             st=state.CLOSING_SERVICE;
-            order.log("Waiter: "+st.toString());
+            mem.log("Chef: "+st.toString());
             kitchen.cleanup();
         }catch(MyException e){
             System.out.println(e);

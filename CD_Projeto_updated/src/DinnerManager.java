@@ -7,18 +7,21 @@ public class DinnerManager {
 	public static void main(String[] args) {
 		int M = 7;
 		int N = 3;
+		
+		System.out.println("Initializing all threads...");
+		GeneralMemory mem = new GeneralMemory(M, N, "C:\\Users\\joaop\\Desktop");
+		Kitchen kitchen = new Kitchen(mem);
+		Bar bar = new Bar(mem);
+		Table table = new Table(mem);
 
-		Order order = new Order(M, N, "C:\\Users\\joaop\\Desktop");
-		Kitchen kitchen = new Kitchen(order);
-		Bar bar = new Bar(order);
-		Table table = new Table(order);
-
-		Chef chefe = new Chef(kitchen, bar, order);
-		Waiter empregado = new Waiter(kitchen, bar, table, order);
+		Chef chefe = new Chef(kitchen, bar, mem);
+		Waiter empregado = new Waiter(kitchen, bar, table, mem);
 		Student[] estudantes = new Student[M];
 		for (int i = 0; i < M; i++) {
-			estudantes[i] = new Student(bar, table, order, i + 1);
+			estudantes[i] = new Student(bar, table, mem, i + 1);
 		}
+		
+		System.out.println("Launching all threads...");
 		chefe.start();
 		empregado.start();
 		for (int i = 0; i < M; i++) {
@@ -39,8 +42,8 @@ public class DinnerManager {
 				System.exit(1);
 			}
 		}
-		System.out.println("FIM!");
-		order.closeLog();
+		System.out.println("Ending...");
+		mem.closeLog();
 		
 	}
 

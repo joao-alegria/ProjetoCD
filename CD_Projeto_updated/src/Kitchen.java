@@ -1,25 +1,18 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /**
- *
+ * 
  * @author joao-alegria
  */
 public class Kitchen {
-    private Order order;
-    private boolean news=true, standBy=true;
+    private GeneralMemory mem;
+    private boolean news=true;
     private int portionsDelivered=0, ordersDelivered=0, portions=0;
     private int N, M;
     
-    //rivate boolean waiter=true;
     
-    public Kitchen(Order o){
-        order=o;
-        this.N=o.getNumStudents();
-        this.M=o.getDishPerStudents();
+    public Kitchen(GeneralMemory m){
+        mem=m;
+        this.N=m.getNumStudents();
+        this.M=m.getDishPerStudents();
     }
     
     public synchronized void watchNews() throws MyException{
@@ -50,18 +43,8 @@ public class Kitchen {
         portions+=1;
         notifyAll();
         
-        order.enableFoodReady();
+        mem.enableFoodReady();
     }
-    
-    //public synchronized void standBy() throws MyException{
-    //    try{
-    //        while(standBy){
-    //            wait();
-    //        }
-    //    }catch(InterruptedException e){
-    //        throw new MyException("Error: Not standing by.");
-    //    }
-    //}
     
     public synchronized boolean allPortionsDelivered(){
         if(portionsDelivered==N){
@@ -71,11 +54,6 @@ public class Kitchen {
         }
     }
     
-    /*public synchronized void returnBar(){
-        waiter=false;
-        notifyAll();
-    }*/
-    
     public synchronized void haveNextPortionReady() throws MyException{
         try{
             Thread.sleep((long)(1+40*Math.random()));
@@ -83,19 +61,8 @@ public class Kitchen {
             throw new MyException("Error: Not presenting");
         }
         portions+=1;
-        //notifyAll();
-        
-        /*try{
-            while(waiter){
-                wait();
-            }
-        }catch(InterruptedException e){
-            throw new MyException("Error: Not presenting because waiter ocupied.");
-        }
-        
-        waiter=true;*/
-        
-        order.enableFoodReady();
+
+        mem.enableFoodReady();
     }
     
     public synchronized boolean allOrdersDelivered(){

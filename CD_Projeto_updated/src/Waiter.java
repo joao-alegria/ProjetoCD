@@ -23,16 +23,15 @@ public class Waiter extends Thread{
     private Table table;
     private Kitchen kitchen;
     private Bar bar;
-    private Order order;
-    private int N;
+    private GeneralMemory mem;
     
-    public Waiter(Kitchen k, Bar b, Table t, Order o){
-        this.st=state.APPRAISING_SITUATION;
-        this.kitchen=k;
-        this.bar=b;
-        this.table=t;
-        this.order=o;
-        this.N=o.getNumStudents();
+    public Waiter(Kitchen k, Bar b, Table t, GeneralMemory m){
+        st=state.APPRAISING_SITUATION;
+        kitchen=k;
+        bar=b;
+        table=t;
+        mem=m;
+        mem.log("Creating Waiter...");
     }
     
     
@@ -42,11 +41,11 @@ public class Waiter extends Thread{
             boolean run=true;
             while(run){
             	st=state.APPRAISING_SITUATION;
-            	order.log("Waiter: "+st.toString());
+            	mem.log("Waiter: "+st.toString());
                 switch(bar.lookAround()){
                     case presentMenu:
                         st=state.PRESENTING_THE_MENU;
-                        order.log("Waiter: "+st.toString());
+                        mem.log("Waiter: "+st.toString());
                         table.saluteClient();
                         bar.returnBar();
                         //kitchen.returnBar();
@@ -54,7 +53,7 @@ public class Waiter extends Thread{
 
                     case takeOrder:
                         st=state.TAKING_THE_ORDER;
-                        order.log("Waiter: "+st.toString());
+                        mem.log("Waiter: "+st.toString());
                         table.getOrder();
                         kitchen.handOrder();
                         bar.returnBar();
@@ -63,19 +62,17 @@ public class Waiter extends Thread{
 
                     case foodReady:
                         st=state.WAITING_FOR_PORTION;
-                        order.log("Waiter: "+st.toString());
-                        //for(int s=0; s<N; s++){
-                            kitchen.collectPortion();
-                            table.servePortion();
-                            bar.returnBar();
-                        //}
-                        //table.returnBar();
+                        mem.log("Waiter: "+st.toString());
+
+                        kitchen.collectPortion();
+                        table.servePortion();
+                        bar.returnBar();
+
                         break;
 
                     case getBill:
                         st=state.PROCESSING_THE_BILL;
-                        order.log("Waiter: "+st.toString());
-                        order.log("Waiter: "+st.toString());
+                        mem.log("Waiter: "+st.toString());
                         bar.prepareBill();
                         table.presentBill();
                         table.waitPayment();

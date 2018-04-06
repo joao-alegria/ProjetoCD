@@ -1,23 +1,18 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /**
- *
+ * 
  * @author joao-alegria
  */
 import genclass.TextFile;
 
-public class Order {
+public class GeneralMemory {
 
 	private int numberOfStudents = 0;
 	private int dishesPerStudent = 0;
-	private boolean presentMenu = false, takeOrder = false, foodReady = false, getBill = false; // cleanUp=false;
+	private boolean presentMenu = false, takeOrder = false, foodReady = false, getBill = false;
 	private TextFile writer;
 
-	public Order(int n, int d, String path) {
+
+	public GeneralMemory(int n, int d, String path) {
 		numberOfStudents = n;
 		dishesPerStudent = d;
 		writer = new TextFile();
@@ -29,7 +24,6 @@ public class Order {
 		takeOrder = false;
 		foodReady = false;
 		getBill = false;
-		// cleanUp=false;
 	}
 
 	public synchronized void enablePresentMenu() {
@@ -52,10 +46,6 @@ public class Order {
             getBill = true;
 	}
 
-	// public synchronized void enableCleanUp(){
-	// cleanUp=true;
-	// }
-
 	public synchronized int getDishPerStudents() {
 		return this.dishesPerStudent;
 	}
@@ -65,7 +55,6 @@ public class Order {
 	}
 
 	public synchronized Event getEvent() throws MyException {
-            //System.out.println(presentMenu+" " + takeOrder +" "+ foodReady+" "+getBill);
             Event aux=null;
             if (presentMenu) {
                     aux= Event.presentMenu;

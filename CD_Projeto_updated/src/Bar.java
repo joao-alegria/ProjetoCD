@@ -3,17 +3,16 @@
  * @author joao-alegria
  */
 public class Bar {
-	private Order order;
+	private GeneralMemory mem;
 	private boolean lookAround = true;
 	
 	private boolean waiter=false;
 
-	public Bar(Order o) {
-		order = o;
+	public Bar(GeneralMemory m) {
+		mem = m;
 	}
 
 	public synchronized Event lookAround() throws MyException {
-            //order.reset();
             try {
                     while (lookAround) {
                         wait();
@@ -22,7 +21,7 @@ public class Bar {
                     throw new MyException("Error: Not looking around.");
             }
             lookAround=true;
-            return order.getEvent();
+            return mem.getEvent();
 	}
 
 	public synchronized void prepareBill() throws MyException{
@@ -37,12 +36,6 @@ public class Bar {
 		waiter=false;
 		notifyAll();
 	}
-
-	//private synchronized Event getEvent() {
-	//	return order.getEvent();
-	//}
-
-	
 	
 	public synchronized void signalWaiter() throws MyException{
 			try{

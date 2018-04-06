@@ -9,19 +9,15 @@
  * @author joao-alegria
  */
 public class Table {
-    private Order order;
-    private int M, N;
-    //private boolean lastMeal;
-    //private boolean lastArriving;
+    private GeneralMemory mem;
+    private int N;
     private int atTable=0, choosen=0, finishedEating=0, served=0;
     
-    private boolean noMenu=true, descOrder=true, chat=true, bill=true, waitPay=true, menuWait=false, allFinished=false;
-    //private boolean waiter=false;
+    private boolean noMenu=true, descOrder=true, chat=true, bill=true, waitPay=true, allFinished=false;
     
-    public Table(Order o){
-        order=o;
-        this.M=o.getDishPerStudents();
-        this.N=o.getNumStudents();
+    public Table(GeneralMemory m){
+        mem=m;
+        this.N=m.getNumStudents();
     }
 
     public synchronized void saluteClient() throws MyException{
@@ -37,7 +33,7 @@ public class Table {
     
     public synchronized int enterRestaurant() throws MyException{
         atTable=atTable+1;
-        order.enablePresentMenu();
+        mem.enablePresentMenu();
         noMenu=true;
         return atTable;
     }
@@ -98,8 +94,7 @@ public class Table {
     }
     
     public synchronized void giveOrder(){
-        //waiter=true;
-        order.enableTakeOrder();
+        mem.enableTakeOrder();
     }
 
     public synchronized void describeOrder() throws MyException{
@@ -124,7 +119,6 @@ public class Table {
     }
 
     public synchronized void servePortion() throws MyException{
-    	//allFinished=true;
         try{
             Thread.sleep((long)(1+80*Math.random()));
         }catch(InterruptedException e){
@@ -149,11 +143,6 @@ public class Table {
         }
     }
 
-    /*public synchronized void returnBar(){
-        waiter=false;
-        notifyAll();
-    }*/
-
     public synchronized void chat() throws MyException{
         
     	try{
@@ -175,9 +164,6 @@ public class Table {
     }
 
     public synchronized int eat() throws MyException{
-    	/*System.out.println("served "+served);
-    	
-    	System.out.println("?");*/
     	
         try{
             Thread.sleep((long)(1+250*Math.random()));
@@ -186,15 +172,6 @@ public class Table {
         }
         finishedEating=finishedEating+1;
         notifyAll();
-        System.out.println(finishedEating + " " + N);
-        
-        /*try{
-	        while(finishedEating<N){
-	            wait();
-	        }
-	    }catch(InterruptedException e){
-	        throw new MyException("Error: Not waiting for everyone.");
-	    }*/
         
         return finishedEating;
             
@@ -204,7 +181,7 @@ public class Table {
     	allFinished=false;
     	chat=false;
     	notifyAll();
-    	order.enableGetBill();
+    	mem.enableGetBill();
     }
 
     public synchronized void presentBill() {
@@ -243,11 +220,20 @@ public class Table {
 
     public synchronized void allFinished() {
     	chat=true;
-        //order.enableFoodReady();
     	allFinished=false;
     	notifyAll();
         finishedEating=0;
         served=0;
+    }
+    
+    public synchronized void goHome() throws MyException{
+    	try{
+            while(waitPay){
+                wait();
+            }
+        }catch(InterruptedException e){
+            throw new MyException("Error: Not waiting for honoring the payment.");
+        }
     }
     
 }
