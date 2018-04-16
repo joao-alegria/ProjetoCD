@@ -17,9 +17,9 @@ public class GeneralMemory {
         
         /**
          * Construtor de GeneralMemory.
-         * @param n int que indica o número de estudantes
-         * @param d int que indica o número de pratos por estudante
-         * @param path String que indica o path a considerar para escrever o log
+         * @param n int que indica o número de estudantes.
+         * @param d int que indica o número de pratos por estudante.
+         * @param path String que indica o path a considerar para escrever o log.
          */
 	public GeneralMemory(int n, int d, String path, String fic) {
                 file=fic;
@@ -37,17 +37,34 @@ public class GeneralMemory {
                 for(int z=0; z<n; z++){
                     header+=String.format("%-29s", "Student "+(z+1));
                 }
+                String rest="";
+                for(int z=0; z<header.length()/2-"Restaurante".length(); z++){
+                    rest+=" ";
+                }
+                writer.writelnString(rest+"Restaurante");
                 writer.writelnString(header);
 	}
         
+        /**
+         * Retorna o número de pratos por estudante.
+         * @return int que indica o número de pratos a processar por estudante.
+         */
 	public synchronized int getDishPerStudents() {
 		return this.dishesPerStudent;
 	}
 
+        /**
+         * Retorna o número de estudantes no restaurante.
+         * @return int que indica o número estudantes a considerar.
+         */
 	public synchronized int getNumStudents() {
 		return this.numberOfStudents;
 	}
 
+        /**
+         * Fornece um método ao Chef de gravar o seu estado interno.
+         * @param st Chef.state que indica o estado atual do Chef a ser gravado.
+         */
         public synchronized void logChefState(Chef.state st) {
                 chefStatus=st;
                 String line="";
@@ -58,6 +75,10 @@ public class GeneralMemory {
 		writer.writelnString(line);
 	}
         
+        /**
+         * Fornece um método ao Waiter de gravar o seu estado interno.
+         * @param st Waiter.state que indica o estado atual do Waiter a ser gravado.
+         */
         public synchronized void logWaiterState(Waiter.state st) {
                 waiterStatus=st;
                 String line="";
@@ -68,6 +89,11 @@ public class GeneralMemory {
 		writer.writelnString(line);
 	}
         
+        /**
+         * Fornece um método ao Student de gravar o seu estado interno.
+         * @param st Student.state que indica o estado atual do Student a ser gravado.
+         * @param id int que indica o Student para o qual o estado deve ser alterado.
+         */
 	public synchronized void logStudentState(Student.state st, int id) {
                 studentStatus[id-1]=st;
                 String line="";
@@ -78,6 +104,9 @@ public class GeneralMemory {
 		writer.writelnString(line);
 	}
 
+        /**
+         * Fecha o ficheiro do log.
+         */
 	public synchronized void closeLog() {
 		writer.close();
 	}

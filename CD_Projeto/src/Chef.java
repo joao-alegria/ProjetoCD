@@ -1,75 +1,84 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 
 /**
- *
- * @author joao-alegria
+ * Entidade Chef. Entidade em que o seu lifecicle replica o de um Chef, sendo esse o papel desta entidade no problema.
+ * @author João Alegria[85048] e Lucas Silva[85036]
  */
-public class Chef extends Thread{
-    
-    static enum state{
+public class Chef extends Thread {
+
+    /**
+     * Enumerado que mantém listado todos os estados possíveis para o Waiter.
+     */
+    static enum state {
         WAITING_FOR_AN_ORDER,
         PREPARING_THE_COURSE,
         DISHING_THE_PORTIONS,
         DELIVERING_THE_PORTIONS,
         CLOSING_SERVICE
     };
+
+    private state st;       //estado interno do chef
     
-    private state st;
+    //zonas partilhadas
     private Kitchen kitchen;
     private Bar bar;
     private GeneralMemory mem;
-    private int M, N;
     
-    public Chef(Kitchen k, Bar b, GeneralMemory m){
-        st=state.WAITING_FOR_AN_ORDER;
-        kitchen=k;
-        bar=b;
-        mem=m;
-        M=m.getDishPerStudents();
-        N=m.getNumStudents();
+    //info
+    private int N,       //número de estudantes
+                M;      //número de pratos por estudante
+
+    /**
+     * Construtor da entidade Chef.
+     * @param k Kitchen que indica a referência para a zona partilhada Kitchen a considerar.
+     * @param b Bar que indica a referência para a zona partilhada Bar a considerar.
+     * @param m GeneralMemory que indica a referência para a zona partilhada GeneralMmory a considerar.
+     */
+    public Chef(Kitchen k, Bar b, GeneralMemory m) {
+        st = state.WAITING_FOR_AN_ORDER;
+        kitchen = k;
+        bar = b;
+        mem = m;
+        M = m.getDishPerStudents();
+        N = m.getNumStudents();
     }
+
     
+    /**
+     * Representa o lifecicle de cada entidade criada deste tipo.
+     */
     @Override
-    public void run(){
-        try{
-            mem.logChefState(st);
+    public void run() {
+        try {
             kitchen.watchNews();
-            st=state.PREPARING_THE_COURSE;
+            st = state.PREPARING_THE_COURSE;
             mem.logChefState(st);
             kitchen.startPrep();
-            for(int i=0; i<M; i++){
-            	st=state.DISHING_THE_PORTIONS;
-            	mem.logChefState(st);
+            for (int i = 0; i < M; i++) {
+                st = state.DISHING_THE_PORTIONS;
+                mem.logChefState(st);
                 kitchen.proceedToPresent();
                 bar.enableFoodReady();
-                for(int s=0; s<N; s++){
-                    st=state.DELIVERING_THE_PORTIONS;
+                for (int s = 0; s < N; s++) {
+                    st = state.DELIVERING_THE_PORTIONS;
                     mem.logChefState(st);
-                    bar.signalWaiter();//st=state.DELIVERING_THE_PORTIONS;
-                    //kitchen.standBy();
-                    if(!kitchen.allPortionsDelivered()){
-                        st=state.DISHING_THE_PORTIONS;
+                    bar.signalWaiter();
+                    if (!kitchen.allPortionsDelivered()) {
+                        st = state.DISHING_THE_PORTIONS;
                         mem.logChefState(st);
                         kitchen.haveNextPortionReady();
                         bar.enableFoodReady();
-                    
-                        //bar.signalWaiter();//st=state.DELIVERING_THE_PORTIONS;
                     }
                 }
-                if(!kitchen.allOrdersDelivered()){
-                	st=state.PREPARING_THE_COURSE;
-                	mem.logChefState(st);
+                if (!kitchen.allOrdersDelivered()) {
+                    st = state.PREPARING_THE_COURSE;
+                    mem.logChefState(st);
                     kitchen.contPrep();
                 }
             }
-            st=state.CLOSING_SERVICE;
+            st = state.CLOSING_SERVICE;
             mem.logChefState(st);
             kitchen.cleanup();
-        }catch(MyException e){
+        } catch (MyException e) {
             System.err.println(e);
         }
     }

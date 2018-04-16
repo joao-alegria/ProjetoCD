@@ -5,9 +5,6 @@
 public class DinnerManager {
 
     public static void main(String[] args) {
-
-        for(int k=0; k<1000; k++){
-            System.out.println(k);
         
         int M = 7;
         int N = 3;
@@ -49,9 +46,6 @@ public class DinnerManager {
         System.out.println("Ending...");
         mem.closeLog();
 
-        
-        
-        }
 
     }
 

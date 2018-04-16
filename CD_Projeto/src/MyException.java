@@ -1,15 +1,16 @@
 /**
- * Minha exceção.
- * @author joao-alegria
+ * Exceção criada para manter o código uniforme.
+ * @author João Alegria[85048] e Lucas Silva[85036]
  */
 public class MyException extends Exception{
     
+    /**
+     * Construto da classe
+     * @param errorMessage String que indica qual o erro a indicar.
+     */
     public MyException(String errorMessage){
         super(errorMessage);
     }
     
-    //public MyException (String errorMessage, Throwable cause){
-    //    super (errorMessage,  cause);
-    //}
 }
 
