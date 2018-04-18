@@ -71,11 +71,10 @@ public class Student extends Thread{
             walk();
             
             int pos=table.enterRestaurant();
-            bar.enablePresentMenu();
-            
-            bar.signalWaiter();
             st= state.TAKING_A_SEAT_AT_THE_TABLE;
             mem.logStudentState(st, ID);
+            bar.enablePresentMenu();
+            bar.signalWaiter();
             table.waitMenu();
             
             

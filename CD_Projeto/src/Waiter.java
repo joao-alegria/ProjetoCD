@@ -51,7 +51,8 @@ public class Waiter extends Thread{
             	mem.logWaiterState(st);
                 switch(bar.lookAround()){
                     case presentMenu:
-                        
+                        st=state.PRESENTING_THE_MENU;
+                        mem.logWaiterState(st);
                         table.saluteClient();
                         bar.returnBar();
                         

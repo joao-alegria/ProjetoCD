@@ -48,9 +48,11 @@ public class Chef extends Thread {
      */
     @Override
     public void run() {
+        int meal=1;
         try {
             kitchen.watchNews();
             st = state.PREPARING_THE_COURSE;
+            mem.logOrderState(meal);
             mem.logChefState(st);
             kitchen.startPrep();
             for (int i = 0; i < M; i++) {
@@ -70,6 +72,8 @@ public class Chef extends Thread {
                     }
                 }
                 if (!kitchen.allOrdersDelivered()) {
+                    meal++;
+                    mem.logOrderState(meal);
                     st = state.PREPARING_THE_COURSE;
                     mem.logChefState(st);
                     kitchen.contPrep();

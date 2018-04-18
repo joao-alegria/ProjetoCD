@@ -149,7 +149,7 @@ public class Kitchen {
      * Simula o levantamento de um prato pelo Waiter para ser servido.
      * O Waiter só tem a capacidade de servir um prato de cada vez.
      */
-    public synchronized void collectPortion() {
+    public synchronized void collectPortion() { //waiter
         portionsDelivered+=1;
     }
 }

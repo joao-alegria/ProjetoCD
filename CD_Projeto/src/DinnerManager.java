@@ -1,9 +1,13 @@
 /**
- *
- * @author joao-alegria
+ * Classe de teste da aplicação. Classe que vai despoletar o desenrolar das ações do restaurante.
+ * @author João Alegria[85048] e Lucas Silva[85036]
  */
 public class DinnerManager {
 
+    /**
+     * Função main.
+     * @param args String[] de possíveis argumentos passados à função main.
+     */
     public static void main(String[] args) {
         
         int M = 7;
@@ -14,7 +18,6 @@ public class DinnerManager {
         Kitchen kitchen = new Kitchen(mem);
         Bar bar = new Bar(mem);
         Table table = new Table(mem);
-
         Chef chefe = new Chef(kitchen, bar, mem);
         Waiter empregado = new Waiter(kitchen, bar, table, mem);
         Student[] estudantes = new Student[M];
@@ -46,7 +49,7 @@ public class DinnerManager {
         System.out.println("Ending...");
         mem.closeLog();
 
-
+        
     }
 
 }
