@@ -69,13 +69,12 @@ public class GeneralMemory {
         return this.numberOfStudents;
     }
 
-    
     /**
      * Fornece um método ao Chef de gravar o seu estado interno.
      *
      * @param st Chef.state que indica o estado atual do Chef a ser gravado.
      */
-    /*public synchronized void logChefState(Chef.state st) {
+    public synchronized void logChefState(Chef.state st) {
         chefStatus = st;
         String line = "";
         line += String.format("%-28s%-23s", chefStatus.toString(), waiterStatus.toString());
@@ -84,14 +83,14 @@ public class GeneralMemory {
         }
         writer.writelnString(line);
 
-    }*/
+    }
 
     /**
      * Fornece um método ao Waiter de gravar o seu estado interno.
      *
      * @param st Waiter.state que indica o estado atual do Waiter a ser gravado.
      */
-    /*public synchronized void logWaiterState(Waiter.state st) {
+    public synchronized void logWaiterState(Waiter.state st) {
         waiterStatus = st;
         String line = "";
         line += String.format("%-28s%-23s", chefStatus.toString(), waiterStatus.toString());
@@ -99,18 +98,18 @@ public class GeneralMemory {
             line += String.format("%-29s", studentStatus[z].toString());
         }
         writer.writelnString(line);
-    }*/
+    }
 
     /**
      * Fornece um método ao Chef de indicar o prato que vai preparar.
      *
      * @param st Waiter.state que indica o estado atual do Waiter a ser gravado.
      */
-    /*public synchronized void logOrderState(int meal) {
+    public synchronized void logOrderState(int meal) {
         
         String line = "Chef will now prepare the course nº "+meal+".";
         writer.writelnString(line);
-    }*/
+    }
 
     /**
      * Fornece um método ao Student de gravar o seu estado interno.
@@ -120,7 +119,7 @@ public class GeneralMemory {
      * @param id int que indica o Student para o qual o estado deve ser
      * alterado.
      */
-    /*public synchronized void logStudentState(Student.state st, int id) {
+    public synchronized void logStudentState(Student.state st, int id) {
         studentStatus[id - 1] = st;
         String line = "";
         line += String.format("%-28s%-23s", chefStatus.toString(), waiterStatus.toString());
@@ -128,32 +127,8 @@ public class GeneralMemory {
             line += String.format("%-29s", studentStatus[z].toString());
         }
         writer.writelnString(line);
-    }*/
-
-    public synchronized void log(Object entity) {
-        if(entity instanceof Chef){
-            chefStatus = ((Chef) (entity)).getStatus();
-        }
-        else if(entity instanceof Waiter){
-            waiterStatus = ((Waiter) (entity)).getStatus();
-        }
-        else if(entity instanceof Student){
-            int id = ((Student) (entity)).getID();
-            studentStatus[id-1] = ((Student) (entity)).getStatus();
-        }
-        else if(entity instanceof Integer){
-            String line = "Chef will now prepare the course nº "+(Integer)entity+".";
-            writer.writelnString(line);
-            return;
-        }
-        String line = "";
-        line += String.format("%-28s%-23s", chefStatus.toString(), waiterStatus.toString());
-        for (int z = 0; z < numberOfStudents; z++) {
-            line += String.format("%-29s", studentStatus[z].toString());
-        }
-        writer.writelnString(line);
     }
-    
+
     /**
      * Fecha o ficheiro do log.
      */

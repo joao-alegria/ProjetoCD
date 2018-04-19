@@ -48,11 +48,11 @@ public class Kitchen {
      * @throws MyException 
      */
     public synchronized void startPrep() throws MyException{
-        /*try {
-            Thread.sleep((long) (1 + 100 * Math.random()));
-        } catch (InterruptedException e) {
-            throw new MyException("Error: Not starting the preparation.");
-        }*/
+        try{
+            Thread.sleep((long)(1+150*Math.random()));
+        }catch(InterruptedException e){
+            throw new MyException("Error: Not preparing");
+        }
         ordersDelivered+=1;
     }
     
@@ -61,11 +61,11 @@ public class Kitchen {
      * @throws MyException 
      */
     public synchronized void proceedToPresent() throws MyException{
-        /*try {
-            Thread.sleep((long) (1 + 100 * Math.random()));
-        } catch (InterruptedException e) {
-            throw new MyException("Error: Not presenting.");
-        }*/
+        try{
+            Thread.sleep((long)(1+40*Math.random()));
+        }catch(InterruptedException e){
+            throw new MyException("Error: Not presenting");
+        }
         portions+=1;
         notifyAll();
         
@@ -88,11 +88,11 @@ public class Kitchen {
      * @throws MyException 
      */
     public synchronized void haveNextPortionReady() throws MyException{
-        /*try {
-            Thread.sleep((long) (1 + 100 * Math.random()));
-        } catch (InterruptedException e) {
-            throw new MyException("Error: Not having the next portion ready.");
-        }*/
+        try{
+            Thread.sleep((long)(1+40*Math.random()));
+        }catch(InterruptedException e){
+            throw new MyException("Error: Not presenting");
+        }
         portions+=1;
 
     }
@@ -114,11 +114,11 @@ public class Kitchen {
      * @throws MyException 
      */
     public synchronized void contPrep() throws MyException{
-        /*try {
-            Thread.sleep((long) (1 + 100 * Math.random()));
-        } catch (InterruptedException e) {
-            throw new MyException("Error: Not continuing to prepare.");
-        }*/
+        try{
+            Thread.sleep((long)(1+150*Math.random()));
+        }catch(InterruptedException e){
+            throw new MyException("Error: Not preparing");
+        }
         ordersDelivered+=1;
         portionsDelivered=0;
         portions=0;
@@ -129,11 +129,11 @@ public class Kitchen {
      * @throws MyException 
      */
     public synchronized void cleanup()  throws MyException{
-        /*try {
-            Thread.sleep((long) (1 + 100 * Math.random()));
-        } catch (InterruptedException e) {
-            throw new MyException("Error: Not cleaning up.");
-        }*/
+        try{
+            Thread.sleep((long)(1+100*Math.random()));
+        }catch(InterruptedException e){
+            throw new MyException("Error: Not cleaning");
+        }
     }
 
     /**
@@ -149,7 +149,7 @@ public class Kitchen {
      * Simula o levantamento de um prato pelo Waiter para ser servido.
      * O Waiter só tem a capacidade de servir um prato de cada vez.
      */
-    public synchronized void collectPortion() {
+    public synchronized void collectPortion() { //waiter
         portionsDelivered+=1;
     }
 }

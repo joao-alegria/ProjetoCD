@@ -40,14 +40,6 @@ public class Waiter extends Thread{
     }
     
     /**
-     * Retorna o estado atual do Waiter.
-     * @return state que indica qual o estado atual do Waiter.
-     */
-    public state getStatus(){
-        return this.st;
-    }
-    
-    /**
      * Representa o lifecicle de cada entidade criada deste tipo.
      */
     @Override
@@ -56,11 +48,11 @@ public class Waiter extends Thread{
             boolean run=true;
             while(run){
             	st=state.APPRAISING_SITUATION;
-            	mem.log(this);
+            	mem.logWaiterState(st);
                 switch(bar.lookAround()){
                     case presentMenu:
                         st=state.PRESENTING_THE_MENU;
-                        mem.log(this);
+                        mem.logWaiterState(st);
                         table.saluteClient();
                         bar.returnBar();
                         
@@ -68,7 +60,7 @@ public class Waiter extends Thread{
 
                     case takeOrder:
                         st=state.TAKING_THE_ORDER;
-                        mem.log(this);
+                        mem.logWaiterState(st);
                         table.getOrder();
                         kitchen.handOrder();
                         bar.returnBar();
@@ -76,7 +68,7 @@ public class Waiter extends Thread{
 
                     case foodReady:
                         st=state.WAITING_FOR_PORTION;
-                        mem.log(this);
+                        mem.logWaiterState(st);
 
                         kitchen.collectPortion();
                         table.servePortion();
@@ -86,7 +78,7 @@ public class Waiter extends Thread{
 
                     case getBill:
                         st=state.PROCESSING_THE_BILL;
-                        mem.log(this);
+                        mem.logWaiterState(st);
                         bar.prepareBill();
                         table.presentBill();
                         table.waitPayment();

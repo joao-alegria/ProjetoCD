@@ -12,7 +12,7 @@ public class Table {
     private int N;      //número de estudantes
 
     //variáveis de controlo
-    private int atTable = 0, choosen = 0, finishedEating = 0, served = 0, chating=0;
+    private int atTable = 0, choosen = 0, finishedEating = 0, served = 0;
     private boolean noMenu = true, descOrder = true, chat = true, bill = true, waitPay = true, allFinished = false;
 
     /**
@@ -28,11 +28,11 @@ public class Table {
      * Simula o cumprimento ao cliente. Liberta o Estudante que se encontrava à espera pelo menu.
      */
     public synchronized void saluteClient() throws MyException {
-        /*try {
+        try {
             Thread.sleep((long) (1 + 100 * Math.random()));
         } catch (InterruptedException e) {
             throw new MyException("Error: Not saluting client.");
-        }*/
+        }
         noMenu = false;
         notifyAll();
     }
@@ -65,16 +65,16 @@ public class Table {
      * Caso contrário, são todos desbloqueados e a refeição prossegue.
      */
     public synchronized void readMenu() throws MyException {
-        /*try {
+        try {
             Thread.sleep((long) (1 + 100 * Math.random()));
         } catch (InterruptedException e) {
-            throw new MyException("Error: Not reading the menu.");
-        }*/
+            throw new MyException("Error: Not reading menu.");
+        }
         if (atTable == N) {
             notifyAll();
         }
         try {
-            while (atTable != N) {
+            while (atTable < N) {
                 wait();
             }
         } catch (InterruptedException e) {
@@ -86,11 +86,11 @@ public class Table {
      * Simula a escolha da refeição.
      */
     public synchronized void choose() throws MyException {
-        /*try {
-            Thread.sleep((long) (1 + 100 * Math.random()));
+        try {
+            Thread.sleep((long) (1 + 120 * Math.random()));
         } catch (InterruptedException e) {
-            throw new MyException("Error: Not choosing.");
-        }*/
+            throw new MyException("Error: Not reading menu.");
+        }
         choosen += 1;
         notifyAll();
     }
@@ -113,23 +113,24 @@ public class Table {
      */
     public synchronized void prepareOrder() throws MyException {
         try {
-            while (choosen != N) {
+            while (choosen < N) {
                 wait();
             }
         } catch (InterruptedException e) {
             throw new MyException("Error: Not preparing the order.");
         }
+
     }
 
     /**
      * Simula a transmissão do pedido dos Estudantes, por parte do Empregado, ao chefe.
      */
     public synchronized void giveOrder() throws MyException {
-        /*try {
-            Thread.sleep((long) (1 + 100 * Math.random()));
+        try {
+            Thread.sleep((long) (1 + 80 * Math.random()));
         } catch (InterruptedException e) {
-            throw new MyException("Error: Not giving the order.");
-        }*/
+            throw new MyException("Error: Not giving order.");
+        }
     }
 
     /**
@@ -137,11 +138,11 @@ public class Table {
      * No final, desbloqueia o Empregado.
      */
     public synchronized void describeOrder() throws MyException {
-        /*try {
-            Thread.sleep((long) (1 + 100 * Math.random()));
+        try {
+            Thread.sleep((long) (1 + 80 * Math.random()));
         } catch (InterruptedException e) {
-            throw new MyException("Error: Not describing the order.");
-        }*/
+            throw new MyException("Error: Not dercribing order.");
+        }
 
         descOrder = false;
         notifyAll();
@@ -167,20 +168,11 @@ public class Table {
      * Depois de servir todos os Estudantes bloqueia à espera do sinal do ultímo a comer para prosseguir o serviço.
      */
     public synchronized void servePortion() throws MyException {
-        /*try {
-            Thread.sleep((long) (1 + 100 * Math.random()));
-        } catch (InterruptedException e) {
-            throw new MyException("Error: Not serving the portion.");
-        }*/
-        
         try {
-            while (chating!=N) {
-                wait();
-            }
+            Thread.sleep((long) (1 + 80 * Math.random()));
         } catch (InterruptedException e) {
-            throw new MyException("Error: Not possible to serve.");
+            throw new MyException("Error: Not serving portion.");
         }
-        
         served += 1;
         notifyAll();
 
@@ -207,6 +199,7 @@ public class Table {
      * -Enquanto os Estudantes esperam pela chegada do próximo prato.
      */
     public synchronized void chat() throws MyException {
+
         try {
             while (allFinished) {
                 wait();
@@ -214,10 +207,7 @@ public class Table {
         } catch (InterruptedException e) {
             throw new MyException("Error: Not waiting for everyone.");
         }
-        
-        chating+=1;
-        notifyAll();
-        
+
         try {
             while (chat) {
                 wait();
@@ -225,7 +215,6 @@ public class Table {
         } catch (InterruptedException e) {
             throw new MyException("Error: Not chating.");
         }
-        chating-=1;
     }
 
     /**
@@ -233,11 +222,12 @@ public class Table {
      * @return int que indica quantos Estudantes é que já acabaram de comer.
      */
     public synchronized int eat() throws MyException {
-        /*try {
-            Thread.sleep((long) (1 + 100 * Math.random()));
+
+        try {
+            Thread.sleep((long) (1 + 250 * Math.random()));
         } catch (InterruptedException e) {
             throw new MyException("Error: Not eating.");
-        }*/
+        }
         finishedEating = finishedEating + 1;
 
         return finishedEating;
@@ -275,12 +265,11 @@ public class Table {
         } catch (InterruptedException e) {
             throw new MyException("Error: Not getting bill.");
         }
-        
-        /*try {
-            Thread.sleep((long) (1 + 100 * Math.random()));
+        try {
+            Thread.sleep((long) (1 + 140 * Math.random()));
         } catch (InterruptedException e) {
-            throw new MyException("Error: Not paying the bill.");
-        }*/
+            throw new MyException("Error: Not paying bill.");
+        }
 
         waitPay = false;
         notifyAll();

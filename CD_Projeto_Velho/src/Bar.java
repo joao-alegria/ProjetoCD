@@ -55,40 +55,32 @@ public class Bar {
      * Ativa o evento de apresentar o menu.
      */
     public synchronized void enablePresentMenu() {
-        try{signalWaiter();}catch(MyException e){}
         this.reset();
         presentMenu = true;
-        //try{signalWaiter();}catch(MyException e){}
     }
 
     /**
      * Ativa o evento de receber o pedido.
      */
     public synchronized void enableTakeOrder() {
-        try{signalWaiter();}catch(MyException e){}
         this.reset();
         takeOrder = true;
-        //try{signalWaiter();}catch(MyException e){}
     }
 
     /**
      * Ativa o evento de servir comida, visto que a comida está pronta.
      */
     public synchronized void enableFoodReady() {
-        try{signalWaiter();}catch(MyException e){}
         this.reset();
         foodReady = true;
-        //try{signalWaiter();}catch(MyException e){}
     }
 
     /**
      * Ativa o evento de tratar da conta.
      */
     public synchronized void enableGetBill() {
-        try{signalWaiter();}catch(MyException e){}
         this.reset();
         getBill = true;
-        //try{signalWaiter();}catch(MyException e){}
     }
 
     /**
@@ -117,11 +109,11 @@ public class Bar {
      * @throws MyException 
      */
     public synchronized void prepareBill() throws MyException {
-        /*try {
-            Thread.sleep((long) (1 + 100 * Math.random()));
+        try {
+            Thread.sleep((long) Math.random() * 100 + 1);
         } catch (InterruptedException e) {
-            throw new MyException("Error: Not preparing the bill.");
-        }*/
+            throw new MyException("Error: Not preparing bill.");
+        }
     }
 
     /**

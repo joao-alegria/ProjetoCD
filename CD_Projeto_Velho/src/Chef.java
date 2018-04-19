@@ -25,8 +25,7 @@ public class Chef extends Thread {
     
     //info
     private int N,       //número de estudantes
-                M,      //número de pratos por estudante
-                meal;   //qual a refeiçao que esta a preparar
+                M;      //número de pratos por estudante
 
     /**
      * Construtor da entidade Chef.
@@ -41,16 +40,8 @@ public class Chef extends Thread {
         mem = m;
         M = m.getDishPerStudents();
         N = m.getNumStudents();
-        meal=0;
     }
 
-    /**
-     * Retorna o estado atual do Chef.
-     * @return state que indica qual o estado atual do Chef.
-     */
-    public state getStatus(){
-        return this.st;
-    }
     
     /**
      * Representa o lifecicle de cada entidade criada deste tipo.
@@ -61,36 +52,35 @@ public class Chef extends Thread {
         try {
             kitchen.watchNews();
             st = state.PREPARING_THE_COURSE;
-            mem.log(meal);
-            mem.log(this);
+            mem.logOrderState(meal);
+            mem.logChefState(st);
             kitchen.startPrep();
             for (int i = 0; i < M; i++) {
                 st = state.DISHING_THE_PORTIONS;
-                mem.log(this);
+                mem.logChefState(st);
                 kitchen.proceedToPresent();
-                //bar.enableFoodReady();
+                bar.enableFoodReady();
                 for (int s = 0; s < N; s++) {
                     st = state.DELIVERING_THE_PORTIONS;
-                    mem.log(this);
-                    bar.enableFoodReady();
-                    //bar.signalWaiter();
+                    mem.logChefState(st);
+                    bar.signalWaiter();
                     if (!kitchen.allPortionsDelivered()) {
                         st = state.DISHING_THE_PORTIONS;
-                        mem.log(this);
+                        mem.logChefState(st);
                         kitchen.haveNextPortionReady();
-                        //bar.enableFoodReady();
+                        bar.enableFoodReady();
                     }
                 }
                 if (!kitchen.allOrdersDelivered()) {
                     meal++;
-                    mem.log(meal);
+                    mem.logOrderState(meal);
                     st = state.PREPARING_THE_COURSE;
-                    mem.log(this);
+                    mem.logChefState(st);
                     kitchen.contPrep();
                 }
             }
             st = state.CLOSING_SERVICE;
-            mem.log(this);
+            mem.logChefState(st);
             kitchen.cleanup();
         } catch (MyException e) {
             System.err.println(e);

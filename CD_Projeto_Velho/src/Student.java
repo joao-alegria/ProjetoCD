@@ -17,22 +17,6 @@ public class Student extends Thread{
     }
     
     /**
-     * Retorna o estado atual do Student.
-     * @return state que indica qual o estado atual do Student.
-     */
-    public state getStatus(){
-        return this.st;
-    }
-    
-    /**
-     * Retorna o ID do Student.
-     * @return int que indica qual o ID do Student.
-     */
-    public int getID(){
-        return this.ID;
-    }
-    
-    /**
      * Enumerado que mantém listado todos os estados possíveis para o Student.
      */
     static enum state {
@@ -88,10 +72,9 @@ public class Student extends Thread{
             
             int pos=table.enterRestaurant();
             st= state.TAKING_A_SEAT_AT_THE_TABLE;
-            System.out.println(st);
-            mem.log(this);
+            mem.logStudentState(st, ID);
             bar.enablePresentMenu();
-            //bar.signalWaiter();
+            bar.signalWaiter();
             table.waitMenu();
             
             
@@ -107,66 +90,54 @@ public class Student extends Thread{
             }
             
             st= state.SELECTING_THE_COURSES;
-            System.out.println(st);
-            mem.log(this);
+            mem.logStudentState(st, ID);
             table.readMenu();
             table.choose();
             if(first){
                 while(!table.allChose()){
                     st= state.ORGANIZING_THE_ORDER;
-                    System.out.println(st);
-                    mem.log(this);
+                    mem.logStudentState(st, ID);
                     table.prepareOrder();
                 }
                 table.giveOrder();
                 bar.enableTakeOrder();
-                System.out.println("all");
-                //bar.signalWaiter();
+                bar.signalWaiter();
                 table.describeOrder();
             }
             st= state.CHATTING_WITH_COMPANIONS;
-            System.out.println(st);
-            mem.log(this);
+            mem.logStudentState(st, ID);
             table.chat();                           // comida chegou alertado pelo waiter
             for(int i=0; i<M; i++){                 //3 vezes
             	st= state.ENJOYING_THE_MEAL;
-                System.out.println(st);
-            	mem.log(this);
+            	mem.logStudentState(st, ID);
                 int pos_eating=table.eat();
                 if(i<M-1){
                     if(pos_eating==N){
                         table.allFinished();
                         st= state.CHATTING_WITH_COMPANIONS;
-                        System.out.println(st);
-                        mem.log(this);
+                        mem.logStudentState(st, ID);
                         table.chat();
                     }else{
                     	st= state.CHATTING_WITH_COMPANIONS;
-                        System.out.println(st);
-                    	mem.log(this);
+                    	mem.logStudentState(st, ID);
                         table.chat();
                     }
                 }
             }
             if(last){
             	st= state.PAYING_THE_MEAL;
-                System.out.println(st);
-            	mem.log(this);
+            	mem.logStudentState(st, ID);
             	table.getBill();
                 bar.enableGetBill();
-                //bar.signalWaiter();
-                System.out.println("antes pay");
+                bar.signalWaiter();
                 table.payBill();
-                System.out.println("depois pay");
                 table.goHome();
                 st= state.GOING_HOME;
-                System.out.println(st);
-                mem.log(this);
+                mem.logStudentState(st, ID);
             }else{
                 table.goHome();
                 st= state.GOING_HOME;
-                System.out.println(st);
-                mem.log(this);
+                mem.logStudentState(st, ID);
             }
         }catch(MyException e){
             System.err.println(e);
