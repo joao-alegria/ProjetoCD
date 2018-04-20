@@ -2,17 +2,17 @@
 import genclass.TextFile;
 
 /**
- * Tipo de dados que corresponde a uma entidade com a informação geral, que
- * passa pelo número de clientes no restaurante e o número de pratos por cada
- * um. Este tipo de dados é também quem fornece ao waiter a informação de qual é
- * o evento que ele deve fazer.
+ * Etidade GeneralMemory.
+ * Tipo de dados que corresponde a uma entidade com a informação geral, 
+ * que passa pelo número de clientes no restaurante e o número de pratos por cada um. 
+ * Este tipo de dados é também quem fornece a funcionalidade de fazer log dos vários estados das diversas entidades.
  *
  * @author João Alegria[85048] e Lucas Silva[85036]
  */
 public class GeneralMemory {
 
-    private int numberOfStudents;
-    private int dishesPerStudent;
+    private int numberOfStudents;           //número de estudantes
+    private int dishesPerStudent;           //número de pratos por estudante
 
     private TextFile writer;    //utilizado para escrever o log
     private Chef.state chefStatus;
@@ -26,6 +26,7 @@ public class GeneralMemory {
      * @param n int que indica o número de estudantes.
      * @param d int que indica o número de pratos por estudante.
      * @param path String que indica o path a considerar para escrever o log.
+     * @param fic String que indica o nome do ficheiro a considerar para escrever o log.
      */
     public GeneralMemory(int n, int d, String path, String fic) {
         file = fic;
@@ -69,67 +70,10 @@ public class GeneralMemory {
         return this.numberOfStudents;
     }
 
-    
     /**
-     * Fornece um método ao Chef de gravar o seu estado interno.
-     *
-     * @param st Chef.state que indica o estado atual do Chef a ser gravado.
+     * Fornece a opção de fazer log num ficheiro previamente definido.
+     * @param entity Object que representa a entidade que quer fazer o log.
      */
-    /*public synchronized void logChefState(Chef.state st) {
-        chefStatus = st;
-        String line = "";
-        line += String.format("%-28s%-23s", chefStatus.toString(), waiterStatus.toString());
-        for (int z = 0; z < numberOfStudents; z++) {
-            line += String.format("%-29s", studentStatus[z].toString());
-        }
-        writer.writelnString(line);
-
-    }*/
-
-    /**
-     * Fornece um método ao Waiter de gravar o seu estado interno.
-     *
-     * @param st Waiter.state que indica o estado atual do Waiter a ser gravado.
-     */
-    /*public synchronized void logWaiterState(Waiter.state st) {
-        waiterStatus = st;
-        String line = "";
-        line += String.format("%-28s%-23s", chefStatus.toString(), waiterStatus.toString());
-        for (int z = 0; z < numberOfStudents; z++) {
-            line += String.format("%-29s", studentStatus[z].toString());
-        }
-        writer.writelnString(line);
-    }*/
-
-    /**
-     * Fornece um método ao Chef de indicar o prato que vai preparar.
-     *
-     * @param st Waiter.state que indica o estado atual do Waiter a ser gravado.
-     */
-    /*public synchronized void logOrderState(int meal) {
-        
-        String line = "Chef will now prepare the course nº "+meal+".";
-        writer.writelnString(line);
-    }*/
-
-    /**
-     * Fornece um método ao Student de gravar o seu estado interno.
-     *
-     * @param st Student.state que indica o estado atual do Student a ser
-     * gravado.
-     * @param id int que indica o Student para o qual o estado deve ser
-     * alterado.
-     */
-    /*public synchronized void logStudentState(Student.state st, int id) {
-        studentStatus[id - 1] = st;
-        String line = "";
-        line += String.format("%-28s%-23s", chefStatus.toString(), waiterStatus.toString());
-        for (int z = 0; z < numberOfStudents; z++) {
-            line += String.format("%-29s", studentStatus[z].toString());
-        }
-        writer.writelnString(line);
-    }*/
-
     public synchronized void log(Object entity) {
         if(entity instanceof Chef){
             chefStatus = ((Chef) (entity)).getStatus();
@@ -142,7 +86,7 @@ public class GeneralMemory {
             studentStatus[id-1] = ((Student) (entity)).getStatus();
         }
         else if(entity instanceof Integer){
-            String line = "Chef will now prepare the course nº "+(Integer)entity+".";
+            String line = "Chef can prepare the course nº "+(Integer)entity+".";
             writer.writelnString(line);
             return;
         }

@@ -1,4 +1,3 @@
-
 /**
  * Entidade Chef. Entidade em que o seu lifecicle replica o de um Chef, sendo esse o papel desta entidade no problema.
  * @author João Alegria[85048] e Lucas Silva[85036]
@@ -6,7 +5,7 @@
 public class Chef extends Thread {
 
     /**
-     * Enumerado que mantém listado todos os estados possíveis para o Waiter.
+     * Enumerado que mantém listado todos os estados possíveis para o Chef.
      */
     static enum state {
         WAITING_FOR_AN_ORDER,
@@ -59,39 +58,41 @@ public class Chef extends Thread {
     public void run() {
         int meal=1;
         try {
-            kitchen.watchNews();
+            kitchen.watchTheNews();
             st = state.PREPARING_THE_COURSE;
             mem.log(meal);
             mem.log(this);
-            kitchen.startPrep();
+            kitchen.startPreparation();
             for (int i = 0; i < M; i++) {
                 st = state.DISHING_THE_PORTIONS;
                 mem.log(this);
                 kitchen.proceedToPresent();
                 //bar.enableFoodReady();
                 for (int s = 0; s < N; s++) {
-                    st = state.DELIVERING_THE_PORTIONS;
-                    mem.log(this);
-                    bar.enableFoodReady();
-                    //bar.signalWaiter();
-                    if (!kitchen.allPortionsDelivered()) {
+                    if(i==0 || s!=0){
+                        st = state.DELIVERING_THE_PORTIONS;
+                        mem.log(this);
+                        bar.alertTheWaiter();
+                    }
+                    
+                    if (!kitchen.haveAllPortionsBeenDelivered()) {
                         st = state.DISHING_THE_PORTIONS;
                         mem.log(this);
                         kitchen.haveNextPortionReady();
-                        //bar.enableFoodReady();
                     }
                 }
-                if (!kitchen.allOrdersDelivered()) {
+                
+                if (!kitchen.hasTheOrderBeenCompleted()) {
                     meal++;
                     mem.log(meal);
                     st = state.PREPARING_THE_COURSE;
                     mem.log(this);
-                    kitchen.contPrep();
+                    kitchen.continuePreparation();
                 }
             }
             st = state.CLOSING_SERVICE;
             mem.log(this);
-            kitchen.cleanup();
+            kitchen.cleanUp();
         } catch (MyException e) {
             System.err.println(e);
         }

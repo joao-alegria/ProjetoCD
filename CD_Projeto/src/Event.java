@@ -6,5 +6,6 @@ public enum Event {
     presentMenu,
     takeOrder,
     foodReady,
-    getBill
+    getBill,
+    end,
 }

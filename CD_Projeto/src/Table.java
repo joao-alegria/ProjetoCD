@@ -4,16 +4,16 @@
  * @author João Alegria[85048] e Lucas Silva[85036]
  */
 public class Table {
+    
     //zona partilhada
-
     private GeneralMemory mem;
 
     //info
     private int N;      //número de estudantes
 
     //variáveis de controlo
-    private int atTable = 0, choosen = 0, finishedEating = 0, served = 0, chating=0;
-    private boolean noMenu = true, descOrder = true, chat = true, bill = true, waitPay = true, allFinished = false;
+    private int atTable = 0, choosen = 0, finishedEating = 0, served = 0, chating=0, wentHome=0;
+    private boolean waitingPad=true, menu= true, enter = true, descOrder = true, chat = true, bill = true, waitPay = true, allFinished = false;
 
     /**
      * Construtor de Table.
@@ -25,67 +25,67 @@ public class Table {
     }
 
     /**
-     * Simula o cumprimento ao cliente. Liberta o Estudante que se encontrava à espera pelo menu.
+     * Simula o cumprimento ao cliente. Liberta o Estudante que estava à espera que o Waiter lhe apresente o menu.
+     * Bloqueia à espera que o o Estudante leia o menu.
+     * @throws MyException Exception que aparece quando existe um erro de execução.
      */
-    public synchronized void saluteClient() throws MyException {
+    public synchronized void saluteTheClient() throws MyException {
         /*try {
             Thread.sleep((long) (1 + 100 * Math.random()));
         } catch (InterruptedException e) {
             throw new MyException("Error: Not saluting client.");
         }*/
-        noMenu = false;
+        enter = false;
         notifyAll();
-    }
-
-    /**
-     * Simula a entrada no restaurante.
-     * @return int que indica a quantidade de pessoas que se encontram na mesa.
-     */
-    public synchronized int enterRestaurant() throws MyException {
-        atTable = atTable + 1;
-        noMenu = true;
-        return atTable;
-    }
-
-    /**
-     * Simula a espera pelo menu. O Estudante fica à espera que o waiter fique desocupado.
-     */
-    public synchronized void waitMenu() throws MyException {
+        
         try {
-            while (noMenu) {
+            while (menu) {
                 wait();
             }
         } catch (InterruptedException e) {
-            throw new MyException("Error: Not waiting for menu.");
+            throw new MyException("Error: Waiting for client to read the menu.");
         }
     }
 
     /**
-     * Simula a leitura do menu. Se o número de Estudantes à mesa for inferiror a N ficam todos à espera. 
-     * Caso contrário, são todos desbloqueados e a refeição prossegue.
+     * Simula a entrada no restaurante. Bloqueia à espera que o Waiter lhe entregue o menu.
+     * @return int que indica qual a posição em que o Estudante se sentou na mesa.
+     * @throws MyException Exception que aparece quando existe um erro de execução.
      */
-    public synchronized void readMenu() throws MyException {
+    public synchronized int enter() throws MyException {
+        atTable = atTable + 1;
+        menu=true;
+        try {
+            while (enter) {
+                wait();
+            }
+        } catch (InterruptedException e) {
+            throw new MyException("Error: Can not enter.");
+        }
+        return atTable;
+    }
+
+    /**
+     * Simula a leitura do menu pelo Estudante. 
+     * Descloqueia o Waiter que ficou à espera que o Estudante lê-se o menu para o Waiter puder voltar ao bar.
+     * @throws MyException Exception que aparece quando existe um erro de execução.
+     */
+    public synchronized void readTheMenu() throws MyException {
         /*try {
             Thread.sleep((long) (1 + 100 * Math.random()));
         } catch (InterruptedException e) {
             throw new MyException("Error: Not reading the menu.");
         }*/
-        if (atTable == N) {
-            notifyAll();
-        }
-        try {
-            while (atTable != N) {
-                wait();
-            }
-        } catch (InterruptedException e) {
-            throw new MyException("Error: Not waiting after reading menu.");
-        }
+        menu=false;
+        notifyAll();
     }
 
     /**
-     * Simula a escolha da refeição.
+     * Simula a escolha da refeição pelo Estudante. 
+     * Caso já todos tenham escolhido desbloqueia o primeiro Estudante que chegou à mesa, e por isso ficou responsável por organizar o pedido.
+     * @throws MyException Exception que aparece quando existe um erro de execução.
      */
-    public synchronized void choose() throws MyException {
+    public synchronized void informCompanion() throws MyException {
         /*try {
             Thread.sleep((long) (1 + 100 * Math.random()));
         } catch (InterruptedException e) {
@@ -96,22 +96,24 @@ public class Table {
     }
 
     /**
-     * Devolve verdadeiro se todos já tiverem escolhido refeição ou falso contrário.
+     * Devolve se todos já tiverem escolhido a refeição ou não.
      * @return boolean que indica se já todos escolheram ou não.
      */
-    public synchronized boolean allChose() {
-        if (choosen == N) {
+    public synchronized boolean hasEverybodyChosen() {
+        if(choosen == N) {
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
     /**
      * Simula a preparação do pedido por parte do Estudante que chegou em primeiro lugar à mesa.
-     * Caso nem todos os Estudantes tenham escolhido, este fica à espera.
+     * Caso nem todos os Estudantes tenham escolhido, este fica à espera que todos escolham.
+     * Depois de todos terem escolhido, bloqueia à espera que o Waiter chegue com o Pad para anotar o pedido.
+     * @throws MyException Exception que aparece quando existe um erro de execução.
      */
-    public synchronized void prepareOrder() throws MyException {
+    public synchronized void prepareTheOrder() throws MyException {
+        choosen+=1;
         try {
             while (choosen != N) {
                 wait();
@@ -119,24 +121,23 @@ public class Table {
         } catch (InterruptedException e) {
             throw new MyException("Error: Not preparing the order.");
         }
+        
+        try {
+            while (waitingPad) {
+                wait();
+            }
+        } catch (InterruptedException e) {
+            throw new MyException("Error: Waiting for the pad.");
+        }
     }
 
-    /**
-     * Simula a transmissão do pedido dos Estudantes, por parte do Empregado, ao chefe.
-     */
-    public synchronized void giveOrder() throws MyException {
-        /*try {
-            Thread.sleep((long) (1 + 100 * Math.random()));
-        } catch (InterruptedException e) {
-            throw new MyException("Error: Not giving the order.");
-        }*/
-    }
 
     /**
      * Simula a descrição do pedido, por parte do Estudante, ao Empregado.
-     * No final, desbloqueia o Empregado.
+     * No final, desbloqueia o Empregado que estava à espera da descrição do pedido.
+     * @throws  MyException Exception que aparece quando existe um erro de execução.
      */
-    public synchronized void describeOrder() throws MyException {
+    public synchronized void describeTheOrder() throws MyException {
         /*try {
             Thread.sleep((long) (1 + 100 * Math.random()));
         } catch (InterruptedException e) {
@@ -148,10 +149,13 @@ public class Table {
     }
 
     /**
-     * Simula a receção do pedido pelo Empregado, pedido feito pelo primero Estudante a chegar.
-     * Empregado bloqueia à espera da descrição do pedido do Estudante.
+     * Simula a anotação do pedido organizado pelo primeiro Estudante a chegar à mesa, pelo Empregado.
+     * Desbloqueia o Estudante que estava a organizar o pedido. Depois disso o Waiter bloqueia à espera da descrição do pedido do Estudante.
+     * @throws MyException Exception que aparece quando existe um erro de execução.
      */
-    public synchronized void getOrder() throws MyException {
+    public synchronized void getThePad() throws MyException {
+        waitingPad=false;
+        notifyAll();
         try {
             while (descOrder) {
                 wait();
@@ -162,11 +166,11 @@ public class Table {
     }
 
     /**
-     * Simula o serviço de um prato a um Estudante.
-     * Desbloqueia todos os Estudantes que estavam a conversar.
-     * Depois de servir todos os Estudantes bloqueia à espera do sinal do ultímo a comer para prosseguir o serviço.
+     * Simula o serviço de um prato a um Estudante. Em primeiro lugar bloqueia para certificar-se que todos os Estudantes estejam a conversar.
+     * Caso tenha servido o prato a todos os Estudantes, desbloqueia-os a todos os Estudantes que estavam a conversar.
+     * @throws MyException Exception que aparece quando existe um erro de execução.
      */
-    public synchronized void servePortion() throws MyException {
+    public synchronized void deliverPortion() throws MyException {
         /*try {
             Thread.sleep((long) (1 + 100 * Math.random()));
         } catch (InterruptedException e) {
@@ -188,25 +192,18 @@ public class Table {
             allFinished = true;
             chat = false;
             notifyAll();
-
-            try {
-                while (allFinished) {
-                    wait();
-                }
-            } catch (InterruptedException e) {
-                throw new MyException("Error: Not serving.");
-            }
-
         }
     }
 
     /**
-     * Simula a conversa à mesa.
+     * Simula a conversa dos Estudantes.
+     * À medida que os Estudantes bloqueiam à espera do próximo prato, avisam o Waiter que pode estar à espera que todos passem para a espera do próximo prato.
      * Pode bloquear os estudantes quando:
      * -Ainda nem todos os Estudantes tenham acabado de comer, ficando os que já acabaram a conversar.
      * -Enquanto os Estudantes esperam pela chegada do próximo prato.
+     * @throws MyException Exception que aparece quando existe um erro de execução.
      */
-    public synchronized void chat() throws MyException {
+    public synchronized void joinTheTalk() throws MyException {
         try {
             while (allFinished) {
                 wait();
@@ -229,10 +226,19 @@ public class Table {
     }
 
     /**
-     * Simula o tempo que cada Estudante demora a comer.
-     * @return int que indica quantos Estudantes é que já acabaram de comer.
+     * Simula o inicií de cada Estudante comer um prato.
+     * @throws MyException Exception que aparece quando existe um erro de execução.
      */
-    public synchronized int eat() throws MyException {
+    public synchronized void startEating() throws MyException {
+
+    }
+    
+    /**
+     * Simula o término de cada Estudante comer um prato.
+     * @return int que indica quantos Estudantes é que já acabaram de comer.
+     * @throws MyException Exception que aparece quando existe um erro de execução.
+     */
+    public synchronized int endEating() throws MyException {
         /*try {
             Thread.sleep((long) (1 + 100 * Math.random()));
         } catch (InterruptedException e) {
@@ -243,37 +249,70 @@ public class Table {
         return finishedEating;
 
     }
-
+    
     /**
-     * Simula o pedido da conta pelo último Estudante a chegar à mesa.
-     * Avisa os restantes Estudantes que vai pagar.
+     * Retorna se todos os Estudantes já acabaram de comer ou não.
+     * @return boolean que indica se todos os Estudantes acabaram de comer.
+     * @throws MyException Exception que aparece quando existe um erro de execução.
      */
-    public synchronized void getBill() {
-        allFinished = false;
-        chat = false;
-        notifyAll();
+    public synchronized boolean hasEverybodyFinished() throws MyException {
+        if(finishedEating==N){
+            chat = true;
+            allFinished = false;
+            notifyAll();
+            finishedEating = 0;
+            served = 0;
+            return true;
+        }
+        return false;
     }
+
 
     /**
      * Simula a apresentação da conta ao Estudante.
      * Acorda o Estudante que estava à espera da conta.
+     * Bloqueia à espera que o Estudante(o último a chegar à mesa) pague a conta.
+     * @throws MyException Exception que aparece quando existe um erro de execução.
      */
-    public synchronized void presentBill() {
+    public synchronized void presentTheBill() throws MyException{
         bill = false;
         notifyAll();
+        
+        try {
+            while (waitPay) {
+                wait();
+            }
+        } catch (InterruptedException e) {
+            throw new MyException("Error: Didn't receive payment.");
+        }
     }
 
     /**
      * Simula o pagamento da conta por parte do Estudante.
-     * No fim de pagar a conta sinaliza ao Waiter e aos restantes Estudantes que a conta foi paga.
+     * Acorda os possíveis Estudantes que estivessem à espera que todos os outros acabassem de comer.
+     * Bloqueia à espera que o Waiter lhe apresente a conta para ele pagar, 
+     * assim como espera que todos os outros Estudantes saiam do restaurante para ele proceder à transação.
+     * No fim de pagar a conta sinaliza ao Waiter que a conta foi paga.
+     * @throws MyException Exception que aparece quando existe um erro de execução.
      */
-    public synchronized void payBill() throws MyException {
+    public synchronized void honorTheBill() throws MyException {
+        allFinished = false;
+        chat = false;
+        notifyAll();
         try {
             while (bill) {
                 wait();
             }
         } catch (InterruptedException e) {
             throw new MyException("Error: Not getting bill.");
+        }
+        
+        try {
+            while (wentHome!=N-1) {
+                wait();
+            }
+        } catch (InterruptedException e) {
+            throw new MyException("Error: Students still in the resturant.");
         }
         
         /*try {
@@ -288,43 +327,26 @@ public class Table {
     }
 
     /**
-     * Simula a espera pelo pagamento por parte do Empregado.
-     */
-    public synchronized void waitPayment() throws MyException {
-        try {
-            while (waitPay) {
-                wait();
-            }
-        } catch (InterruptedException e) {
-            throw new MyException("Error: Not receiving payment.");
-        }
-    }
-
-    /**
-     * Garante o final da refeição quando já todos acabaram de comer.
-     * Chamado pelo último Estudante a acabar de comer e simboliza que todos os Estudantes já acabaram de comer,
-     * podendo por isso prosseguir na refeição.
-     */
-    public synchronized void allFinished() {
-        chat = true;
-        allFinished = false;
-        notifyAll();
-        finishedEating = 0;
-        served = 0;
-    }
-
-    /**
-     * Simula a ida para casa.
-     * Estudantes só saem do restaurante caso a refeição já esteja paga pelo último Estudante a chegar.
+     * Simula a ida para casa de cada Estudante.
+     * À medida que os Estudantes vão saindo vão avisando os restantes, 
+     * podendo por isso desloquear o Estudante que estava à espera que todos saissem para ele pagar.
+     * @throws MyException Exception que aparece quando existe um erro de execução.
      */
     public synchronized void goHome() throws MyException {
-        try {
-            while (waitPay) {
-                wait();
-            }
+        wentHome+=1;
+        notifyAll();
+    }
+    
+    /**
+     * Simula a despedida do Waiter para cada Estudante que sai.
+     * @throws MyException Exception que aparece quando existe um erro de execução.
+     */
+    public synchronized void sayGoodbye() throws MyException{
+        /*try {
+            Thread.sleep((long) (1 + 100 * Math.random()));
         } catch (InterruptedException e) {
-            throw new MyException("Error: Not waiting for honoring the payment.");
-        }
+            throw new MyException("Error: Not saying goodbye.");
+        }*/
     }
 
 }

@@ -9,7 +9,7 @@ public class Kitchen {
     private GeneralMemory mem;
     
     //variáveis de controlo
-    private boolean news=true;
+    private boolean news=true, note=true, portion=true, nextPortion=true;
     private int portionsDelivered=0, ordersDelivered=0, portions=0;
     
     //info
@@ -29,11 +29,11 @@ public class Kitchen {
     }
     
     /**
-     * Simula a espero do Chef enquanto não recebe nenhuma ordem.
-     * É acordado quando o Waiter lhe entrega o pedido.
-     * @throws MyException 
+     * Simula a espera do Chef enquanto não recebe nenhum pedido.
+     * É desbloqueado quando o Waiter lhe entrega o pedido(handTheNoteToTheChef()).
+     * @throws MyException Exception que aparece quando existe um erro de execução.
      */
-    public synchronized void watchNews() throws MyException{
+    public synchronized void watchTheNews() throws MyException{
         try{
             while(news){
                 wait();
@@ -44,21 +44,23 @@ public class Kitchen {
     }
     
     /**
-     * Simula a preparação de um tipo de pratos.
-     * @throws MyException 
+     * Simula a preparação de um dos pratos da refeição.
+     * @throws MyException Exception que aparece quando existe um erro de execução.
      */
-    public synchronized void startPrep() throws MyException{
+    public synchronized void startPreparation() throws MyException{
         /*try {
             Thread.sleep((long) (1 + 100 * Math.random()));
         } catch (InterruptedException e) {
             throw new MyException("Error: Not starting the preparation.");
         }*/
         ordersDelivered+=1;
+        note=false;
+        notifyAll();
     }
     
     /**
      * Simula a preparação para apresentar os pratos antes preparados e o empratamento de um prato.
-     * @throws MyException 
+     * @throws MyException Exception que aparece quando existe um erro de execução.
      */
     public synchronized void proceedToPresent() throws MyException{
         /*try {
@@ -66,16 +68,17 @@ public class Kitchen {
         } catch (InterruptedException e) {
             throw new MyException("Error: Not presenting.");
         }*/
-        portions+=1;
-        notifyAll();
-        
+        //portions+=1;   
     }
     
     /**
      * Verifica se todos os pratos desse tipo já foram entregues.
+     * Pode desbloquear o Waiter que necessita da confirmação que o prato que pretende servir está realmente empratado.
      * @return boolean que indica se todos os pratos já foram servidos ou não.
      */
-    public synchronized boolean allPortionsDelivered(){
+    public synchronized boolean haveAllPortionsBeenDelivered(){
+        portion=false;
+        notifyAll();
         if(portionsDelivered==N){
             return true;
         }else{
@@ -85,7 +88,8 @@ public class Kitchen {
     
     /**
      * Simula a preparação de mais um prato.
-     * @throws MyException 
+     * Bloqueia caso o Waiter não tenha recolhido o prato anterior.
+     * @throws MyException Exception que aparece quando existe um erro de execução.
      */
     public synchronized void haveNextPortionReady() throws MyException{
         /*try {
@@ -94,14 +98,21 @@ public class Kitchen {
             throw new MyException("Error: Not having the next portion ready.");
         }*/
         portions+=1;
-
+        try{
+            while(nextPortion){
+                wait();
+            }
+        }catch(InterruptedException e){
+            throw new MyException("Error: Waiting to prepare next portion.");
+        }
+        nextPortion=true;
     }
     
     /**
-     * Verifica se todos os tipos de pratos já foram preparados e entregues ao cliente.
-     * @return boolean que indica se ja tudo foi entregue.
+     * Verifica se todo o pedido já foi preparado e entregue ao cliente.
+     * @return boolean que indica se já tudo foi entregue.
      */
-    public synchronized boolean allOrdersDelivered(){
+    public synchronized boolean hasTheOrderBeenCompleted(){
         if(ordersDelivered==M){
             return true;
         }else{
@@ -110,10 +121,10 @@ public class Kitchen {
     }
     
     /**
-     * Simula a continuação do serviço e a preparação de mais um tipo de prato.
-     * @throws MyException 
+     * Simula a continuação do serviço e a preparação de mais um prato da refeição.
+     * @throws MyException Exception que aparece quando existe um erro de execução.
      */
-    public synchronized void contPrep() throws MyException{
+    public synchronized void continuePreparation() throws MyException{
         /*try {
             Thread.sleep((long) (1 + 100 * Math.random()));
         } catch (InterruptedException e) {
@@ -125,10 +136,10 @@ public class Kitchen {
     }
     
     /**
-     * Simula a limpeza da cozinha por parte do Chef, responsável por essa zona.
-     * @throws MyException 
+     * Simula a limpeza da cozinha por parte do Chef, entidade responsável por essa zona.
+     * @throws MyException Exception que aparece quando existe um erro de execução.
      */
-    public synchronized void cleanup()  throws MyException{
+    public synchronized void cleanUp()  throws MyException{
         /*try {
             Thread.sleep((long) (1 + 100 * Math.random()));
         } catch (InterruptedException e) {
@@ -137,19 +148,41 @@ public class Kitchen {
     }
 
     /**
-     * Simula a entrega da ordem do Waiter ao Chef.
+     * Simula a entrega do pedido anotado pelo Waiter ao Chef.
      * É com este evento que o Chef acorda e começa a preparação da refeição.
+     * O Chef espera que o Waiter lhe entregue o pedido.
+     * @throws MyException Exception que aparece quando existe um erro de execução.
      */
-    public synchronized void handOrder() {
+    public synchronized void handTheNoteToTheChef() throws MyException{
         news=false;
         notifyAll();
+        
+        try{
+            while(note){
+                wait();
+            }
+        }catch(InterruptedException e){
+            throw new MyException("Error: Waiting the chef to receive the note.");
+        }
     }
 
     /**
      * Simula o levantamento de um prato pelo Waiter para ser servido.
      * O Waiter só tem a capacidade de servir um prato de cada vez.
+     * O Waiter espera que a porção esteja realmente empratada. Depois de ter a certeza que está empratada, avisa que pede ser empratada outra.
+     * @throws MyException Exception que aparece quando existe um erro de execução.
      */
-    public synchronized void collectPortion() {
+    public synchronized void collectPortion() throws MyException{
+        try{
+            while(portion){
+                wait();
+            }
+        }catch(InterruptedException e){
+            throw new MyException("Error: Waiting for portion");
+        }
+        portion=true;
         portionsDelivered+=1;
+        nextPortion=false;
+        notifyAll();
     }
 }

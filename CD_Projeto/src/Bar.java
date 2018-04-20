@@ -1,7 +1,6 @@
-
 /**
  * Entidade Bar. Entidade que representa a zona partilhada Bar, onde o Waiter irá executar a maioria das suas atividades, sendo a principal esperar por eventos.
- * É nesta zona partilhada que não só o Chef como tambem os Estudantes irão executar algumas das suas operações, principalmente a sinalização do Waiter.
+ * É nesta zona partilhada que o Chef, assim como os Estudantes irão executar algumas das suas operações, principalmente a sinalização do Waiter.
  *
  * @author João Alegria[85048] e Lucas Silva[85036]
  */
@@ -12,11 +11,11 @@ public class Bar {
     
     //variáveis de controlo
     private boolean lookAround = true;
-    private boolean presentMenu = false, takeOrder = false, foodReady = false, getBill = false;
+    private boolean presentMenu = false, takeOrder = false, foodReady = false, getBill = false, end=false;
     private boolean waiter = false;
 
     /**
-     * Construtor de Table.
+     * Construtor de Bar.
      * @param m GeneralMemory que indica a referência para a zona partilhada GeneralMmory a considerar.
      */
     public Bar(GeneralMemory m) {
@@ -26,8 +25,9 @@ public class Bar {
     /**
      * Simila a espera do Waiter.
      * Waiter bloqueia à espera que necessitem dele e é acordado quando o chamam para fazer alguma ação.
+     * Pode acordar com o enter(), o exit(), o signalTheWaiter(), o callTheWaiter(), o alertTheWaiter() e o shouldHaveArrivedEarlier().
      * @return Event que indica qual evento que o Waiter deve satisfazer.
-     * @throws MyException 
+     * @throws MyException Exception que aparece quando existe um erro de execução.
      */
     public synchronized Event lookAround() throws MyException {
         try {
@@ -42,61 +42,92 @@ public class Bar {
     }
 
     /**
-     * Restaura os valores para valores por definição.
+     * Restaura os valores dos eventos para valores que indicam o evento nulo.
      */
-    public synchronized void reset() {
+    private synchronized void reset() {
         presentMenu = false;
         takeOrder = false;
         foodReady = false;
         getBill = false;
+        end=false;
     }
 
     /**
-     * Ativa o evento de apresentar o menu.
+     * Ativa quando um Estudante entra no restaurante. Simula o evento de entregar o menu e esperar que o Estudante o leia.
+     * Acorda o Waiter.
+     * @throws MyException Exception que aparece quando existe um erro de execução.
      */
-    public synchronized void enablePresentMenu() {
-        try{signalWaiter();}catch(MyException e){}
+    public synchronized void enter() throws MyException{
+        try{signalWaiter();}catch(MyException e){throw e;}
         this.reset();
         presentMenu = true;
-        //try{signalWaiter();}catch(MyException e){}
+    }
+    
+    /**
+     * Ativa o evento de um Estudante sair do restaurante. Simula a saida e a despedida respetiva.
+     * Acorda o Waiter.
+     * @throws MyException Exception que aparece quando existe um erro de execução.
+     */
+    public synchronized void exit() throws MyException{
+        try{signalWaiter();}catch(MyException e){throw e;}
+        this.reset();
+        end = true;
     }
 
     /**
-     * Ativa o evento de receber o pedido.
+     * Ativa o evento de receber o pedido organizado pelo primeiro Estudante a chegar à mesa. 
+     * Simula a receção do pedido pela parte do Waiter, e por isso espera que o Estudante lhe descreva o pedido.
+     * @throws MyException Exception que aparece quando existe um erro de execução.
      */
-    public synchronized void enableTakeOrder() {
-        try{signalWaiter();}catch(MyException e){}
+    public synchronized void callTheWaiter() throws MyException{
+        try{signalWaiter();}catch(MyException e){throw e;}
         this.reset();
         takeOrder = true;
-        //try{signalWaiter();}catch(MyException e){}
     }
 
     /**
-     * Ativa o evento de servir comida, visto que a comida está pronta.
+     * Ativa o evento de servir comida, visto que a comida está pronta. 
+     * Simula o ato do Waiter ir buscar um prato e o ir entregar à mesa. Este evento é despoletado pelo Chef.
+     * Acorda o Waiter.
+     * @throws MyException Exception que aparece quando existe um erro de execução.
      */
-    public synchronized void enableFoodReady() {
-        try{signalWaiter();}catch(MyException e){}
+    public synchronized void alertTheWaiter() throws MyException{
+        try{signalWaiter();}catch(MyException e){throw e;}
         this.reset();
         foodReady = true;
-        //try{signalWaiter();}catch(MyException e){}
+    }
+    
+    /**
+     * Ativa o evento de servir comida, visto que a ja todos acabaram de comer o último prato.
+     * Simula o ato do Waiter ir buscar um prato e o ir entregar à mesa. 
+     * Este evento é despoletado pelo último Estudante a comer o último prato.
+     * Acorda o Waiter.
+     * @throws MyException Exception que aparece quando existe um erro de execução.
+     */
+    public synchronized void signalTheWaiter() throws MyException{
+        try{signalWaiter();}catch(MyException e){throw e;}
+        this.reset();
+        foodReady = true;
     }
 
     /**
-     * Ativa o evento de tratar da conta.
+     * Ativa o evento de preparar e proceder ao pagamento da conta.
+     * Simula o ato de pagamento da refeição. Por isso o Waiter fica à espera que o Estudante(último a chegar à mesa) pague a conta.
+     * Acorda o Waiter.
+     * @throws MyException Exception que aparece quando existe um erro de execução.
      */
-    public synchronized void enableGetBill() {
-        try{signalWaiter();}catch(MyException e){}
+    public synchronized void shouldHaveArrivedEarlier() throws MyException{
+        try{signalWaiter();}catch(MyException e){throw e;}
         this.reset();
         getBill = true;
-        //try{signalWaiter();}catch(MyException e){}
     }
 
     /**
      * Retorna o evento que o Waiter deve satisfazer.
      * @return Event que indica de entre os eventos, qual deve ser atendido.
-     * @throws MyException 
+     * @throws MyException Exception que aparece quando existe um erro de execução.
      */
-    public synchronized Event getEvent() throws MyException {
+    private synchronized Event getEvent() throws MyException {
         Event aux = null;
         if (presentMenu) {
             aux = Event.presentMenu;
@@ -106,6 +137,8 @@ public class Bar {
             aux = Event.foodReady;
         } else if (getBill) {
             aux = Event.getBill;
+        } else if (end) {
+            aux = Event.end;
         } else {
             throw new MyException("Erro na função getEvent da classe Order!");
         }
@@ -114,9 +147,9 @@ public class Bar {
 
     /**
      * Simula a preparação da conta por parte do Waiter.
-     * @throws MyException 
+     * @throws MyException Exception que aparece quando existe um erro de execução.
      */
-    public synchronized void prepareBill() throws MyException {
+    public synchronized void prepareTheBill() throws MyException {
         /*try {
             Thread.sleep((long) (1 + 100 * Math.random()));
         } catch (InterruptedException e) {
@@ -125,21 +158,21 @@ public class Bar {
     }
 
     /**
-     * Simula o retorno para o Bar. Função usada exclusivamente pelo Waiter no fim de cada evento.
+     * Simula o retorno para o Bar. Função usada exclusivamente pelo Waiter no fim de cada evento qu ele executa.
      * Desbloqueia eventuais entidades que estivessem à espera que o Waiter ficasse desocupado.
      */
-    public synchronized void returnBar() {
+    public synchronized void returnToTheBar() {
         waiter = false;
         notifyAll();
     }
 
     /**
      * Sinaliza o Waiter de que existe um evento a ser atendido.
-     * Função usada por todas as entidades que pertendam um serviço do Waiter, podendo ser o Chef ou um Estudante.
+     * Função interna usada indiretamente por todas as entidades que pertendam um serviço do Waiter, podendo bloquear caso o Waiter esteja ocupado.
      * Caso o Waiter esteja desocupado, ele é acordado, obtendo o evento a executar e fazendo-o.
-     * @throws MyException 
+     * @throws MyException Exception que aparece quando existe um erro de execução.
      */
-    public synchronized void signalWaiter() throws MyException {
+    private synchronized void signalWaiter() throws MyException {
         try {
             while (waiter) {
                 wait();

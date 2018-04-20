@@ -24,6 +24,10 @@ public class Waiter extends Thread{
     private Bar bar;
     private GeneralMemory mem;
     
+    //info
+    private int N,              //número de estudantes
+                goodbye;        //número de estudantes que foram embora
+    
     /**
      * Construtor da entidade Waiter.
      * @param k Kitchen que indica a referência para a zona partilhada Kitchen a considerar.
@@ -37,6 +41,8 @@ public class Waiter extends Thread{
         bar=b;
         table=t;
         mem=m;
+        N=m.getNumStudents();
+        goodbye=0;
     }
     
     /**
@@ -61,39 +67,49 @@ public class Waiter extends Thread{
                     case presentMenu:
                         st=state.PRESENTING_THE_MENU;
                         mem.log(this);
-                        table.saluteClient();
-                        bar.returnBar();
+                        table.saluteTheClient();
+                        bar.returnToTheBar();
                         
                         break;
 
                     case takeOrder:
                         st=state.TAKING_THE_ORDER;
                         mem.log(this);
-                        table.getOrder();
-                        kitchen.handOrder();
-                        bar.returnBar();
+                        table.getThePad();
+                        kitchen.handTheNoteToTheChef();
+                        bar.returnToTheBar();
                         break;
 
                     case foodReady:
                         st=state.WAITING_FOR_PORTION;
                         mem.log(this);
-
+                        
                         kitchen.collectPortion();
-                        table.servePortion();
-                        bar.returnBar();
+                        table.deliverPortion();
+                        bar.returnToTheBar();
 
                         break;
 
                     case getBill:
                         st=state.PROCESSING_THE_BILL;
                         mem.log(this);
-                        bar.prepareBill();
-                        table.presentBill();
-                        table.waitPayment();
-                        run=false;
+                        bar.prepareTheBill();
+                        table.presentTheBill();
+                        bar.returnToTheBar();
+                        break;
+                        
+                    case end:
+                        table.sayGoodbye();
+                        goodbye+=1;
+                        if(goodbye==N){
+                            run=false;
+                        }else{
+                            bar.returnToTheBar();
+                        }
                         break;
                 }
             }
+            
         }catch(MyException e){
             System.err.println(e);
         }

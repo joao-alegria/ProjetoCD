@@ -3,34 +3,6 @@
  * @author João Alegria[85048] e Lucas Silva[85036]
  */
 public class Student extends Thread{
-
-    /**
-     * Simula o tempo que demora a um Estudante ir para o restaurante.
-     * @throws MyException
-     */
-    private void walk() throws MyException{
-        try{
-            Thread.sleep((long)(1+300*Math.random()));
-        }catch(InterruptedException e){
-            throw new MyException("Error: Not walking.");
-        }
-    }
-    
-    /**
-     * Retorna o estado atual do Student.
-     * @return state que indica qual o estado atual do Student.
-     */
-    public state getStatus(){
-        return this.st;
-    }
-    
-    /**
-     * Retorna o ID do Student.
-     * @return int que indica qual o ID do Student.
-     */
-    public int getID(){
-        return this.ID;
-    }
     
     /**
      * Enumerado que mantém listado todos os estados possíveis para o Student.
@@ -86,13 +58,13 @@ public class Student extends Thread{
         try{
             walk();
             
-            int pos=table.enterRestaurant();
             st= state.TAKING_A_SEAT_AT_THE_TABLE;
-            System.out.println(st);
             mem.log(this);
-            bar.enablePresentMenu();
+            bar.enter();
+            int pos=table.enter();
+            
             //bar.signalWaiter();
-            table.waitMenu();
+            //table.waitMenu();
             
             
             if(pos==1){
@@ -106,70 +78,84 @@ public class Student extends Thread{
                 this.last=false;
             }
             
-            st= state.SELECTING_THE_COURSES;
-            System.out.println(st);
-            mem.log(this);
-            table.readMenu();
-            table.choose();
+            
+            table.readTheMenu();
+            
+            if(last){
+                bar.callTheWaiter();
+            }
+            
             if(first){
-                while(!table.allChose()){
+                while(!table.hasEverybodyChosen()){
                     st= state.ORGANIZING_THE_ORDER;
-                    System.out.println(st);
                     mem.log(this);
-                    table.prepareOrder();
+                    table.prepareTheOrder();
                 }
-                table.giveOrder();
-                bar.enableTakeOrder();
-                System.out.println("all");
-                //bar.signalWaiter();
-                table.describeOrder();
+                table.describeTheOrder();
+            }else{
+                st= state.SELECTING_THE_COURSES;
+                mem.log(this);
+                table.informCompanion();
             }
             st= state.CHATTING_WITH_COMPANIONS;
-            System.out.println(st);
             mem.log(this);
-            table.chat();                           // comida chegou alertado pelo waiter
-            for(int i=0; i<M; i++){                 //3 vezes
-            	st= state.ENJOYING_THE_MEAL;
-                System.out.println(st);
+            table.joinTheTalk();
+            for(int i=0; i<M; i++){
+                table.startEating();
+                st= state.ENJOYING_THE_MEAL;
             	mem.log(this);
-                int pos_eating=table.eat();
+                table.endEating();
                 if(i<M-1){
-                    if(pos_eating==N){
-                        table.allFinished();
-                        st= state.CHATTING_WITH_COMPANIONS;
-                        System.out.println(st);
-                        mem.log(this);
-                        table.chat();
-                    }else{
-                    	st= state.CHATTING_WITH_COMPANIONS;
-                        System.out.println(st);
-                    	mem.log(this);
-                        table.chat();
+                    if(table.hasEverybodyFinished()){
+                        bar.signalTheWaiter();
                     }
+                    st= state.CHATTING_WITH_COMPANIONS;
+                    mem.log(this);
+                    table.joinTheTalk();
                 }
             }
             if(last){
             	st= state.PAYING_THE_MEAL;
-                System.out.println(st);
             	mem.log(this);
-            	table.getBill();
-                bar.enableGetBill();
-                //bar.signalWaiter();
-                System.out.println("antes pay");
-                table.payBill();
-                System.out.println("depois pay");
-                table.goHome();
-                st= state.GOING_HOME;
-                System.out.println(st);
-                mem.log(this);
-            }else{
-                table.goHome();
-                st= state.GOING_HOME;
-                System.out.println(st);
-                mem.log(this);
+                bar.shouldHaveArrivedEarlier();
+                table.honorTheBill();
+                
             }
+            st= state.GOING_HOME;
+            mem.log(this);
+            table.goHome();
+            bar.exit();
         }catch(MyException e){
             System.err.println(e);
         }
     }
+    
+    /**
+     * Simula o tempo que demora a um Estudante ir para o restaurante.
+     * @throws MyException Exception que aparece quando existe um erro de execução.
+     */
+    private void walk() throws MyException{
+        try{
+            Thread.sleep((long)(1+300*Math.random()));
+        }catch(InterruptedException e){
+            throw new MyException("Error: Not walking.");
+        }
+    }
+    
+    /**
+     * Retorna o estado atual do Estudante.
+     * @return state que indica qual o estado atual do Student.
+     */
+    public state getStatus(){
+        return this.st;
+    }
+    
+    /**
+     * Retorna o ID do Estudante.
+     * @return int que indica qual o ID do Student.
+     */
+    public int getID(){
+        return this.ID;
+    }
+    
 }
