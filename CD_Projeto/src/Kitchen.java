@@ -20,7 +20,7 @@ public class Kitchen {
     
     /**
      * Construtor de Kitchen.
-     * @param m GeneralMemory que indica a referência para a zona partilhada GeneralMmory a considerar.
+     * @param m GeneralMemory que indica a referência para a zona partilhada GeneralMemory a considerar.
      */
     public Kitchen(GeneralMemory m){
         mem=m;

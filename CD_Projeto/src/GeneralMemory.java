@@ -2,7 +2,7 @@
 import genclass.TextFile;
 
 /**
- * Etidade GeneralMemory.
+ * Entidade GeneralMemory.
  * Tipo de dados que corresponde a uma entidade com a informação geral, 
  * que passa pelo número de clientes no restaurante e o número de pratos por cada um. 
  * Este tipo de dados é também quem fornece a funcionalidade de fazer log dos vários estados das diversas entidades.

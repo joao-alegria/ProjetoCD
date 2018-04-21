@@ -10,7 +10,7 @@ public class DinnerManager {
      */
     public static void main(String[] args) {
         
-        //for(int z=0; z<20000; z++){System.out.println(z);
+        //for(int z=0; z<200; z++){System.out.println(z);
         
         int M = 7;
         int N = 3;

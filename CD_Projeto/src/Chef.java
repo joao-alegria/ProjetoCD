@@ -1,5 +1,5 @@
 /**
- * Entidade Chef. Entidade em que o seu lifecicle replica o de um Chef, sendo esse o papel desta entidade no problema.
+ * Entidade Chef. Entidade em que o seu lifecycle replica o de um Chef, sendo esse o papel desta entidade no problema.
  * @author João Alegria[85048] e Lucas Silva[85036]
  */
 public class Chef extends Thread {
@@ -31,7 +31,7 @@ public class Chef extends Thread {
      * Construtor da entidade Chef.
      * @param k Kitchen que indica a referência para a zona partilhada Kitchen a considerar.
      * @param b Bar que indica a referência para a zona partilhada Bar a considerar.
-     * @param m GeneralMemory que indica a referência para a zona partilhada GeneralMmory a considerar.
+     * @param m GeneralMemory que indica a referência para a zona partilhada GeneralMemory a considerar.
      */
     public Chef(Kitchen k, Bar b, GeneralMemory m) {
         st = state.WAITING_FOR_AN_ORDER;
@@ -52,7 +52,7 @@ public class Chef extends Thread {
     }
     
     /**
-     * Representa o lifecicle de cada entidade criada deste tipo.
+     * Representa o lifecycle de cada entidade criada deste tipo.
      */
     @Override
     public void run() {
@@ -69,9 +69,9 @@ public class Chef extends Thread {
                 kitchen.proceedToPresent();
                 //bar.enableFoodReady();
                 for (int s = 0; s < N; s++) {
+                    st = state.DELIVERING_THE_PORTIONS;
+                    mem.log(this);
                     if(i==0 || s!=0){
-                        st = state.DELIVERING_THE_PORTIONS;
-                        mem.log(this);
                         bar.alertTheWaiter();
                     }
                     

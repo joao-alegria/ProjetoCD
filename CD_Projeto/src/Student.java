@@ -1,5 +1,5 @@
 /**
- * Entidade Student. Entidade em que o seu lifecicle replica o de um Estudante, sendo esse o papel desta entidade no problema.
+ * Entidade Student. Entidade em que o seu lifecycle replica o de um Estudante, sendo esse o papel desta entidade no problema.
  * @author João Alegria[85048] e Lucas Silva[85036]
  */
 public class Student extends Thread{
@@ -37,7 +37,7 @@ public class Student extends Thread{
      * Construtor da entidade Student.
      * @param b Bar que indica a referência para a zona partilhada Bar a considerar.
      * @param t Table que indica a referência para a zona partilhada Table a considerar.
-     * @param m GeneralMemory que indica a referência para a zona partilhada GeneralMmory a considerar.
+     * @param m GeneralMemory que indica a referência para a zona partilhada GeneralMemory a considerar.
      * @param id int que indica qual o ID do Estudante.
      */
     public Student(Bar b, Table t, GeneralMemory m, int id){
@@ -50,8 +50,8 @@ public class Student extends Thread{
         ID=id;
     }
     
-    /**
-     * Representa o lifecicle de cada entidade criada deste tipo.
+    /*
+     * Representa o lifecycle de cada entidade criada deste tipo.
      */
     @Override
     public void run(){
@@ -131,7 +131,7 @@ public class Student extends Thread{
     }
     
     /**
-     * Simula o tempo que demora a um Estudante ir para o restaurante.
+     * Simula o tempo que um Estudante demora a ir para o restaurante.
      * @throws MyException Exception que aparece quando existe um erro de execução.
      */
     private void walk() throws MyException{

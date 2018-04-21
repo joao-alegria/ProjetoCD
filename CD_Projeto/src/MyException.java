@@ -5,7 +5,7 @@
 public class MyException extends Exception{
     
     /**
-     * Construto da classe
+     * Construtor da classe
      * @param errorMessage String que indica qual o erro a indicar.
      */
     public MyException(String errorMessage){

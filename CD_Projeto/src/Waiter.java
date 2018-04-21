@@ -1,5 +1,5 @@
 /**
- * Entidade Waiter. Entidade em que o seu lifecicle replica o de um Empregado, sendo esse o papel desta entidade no problema.
+ * Entidade Waiter. Entidade em que o seu lifecycle replica o de um Empregado, sendo esse o papel desta entidade no problema.
  * @author João Alegria[85048] e Lucas Silva[85036]
  */
 public class Waiter extends Thread{
@@ -33,7 +33,7 @@ public class Waiter extends Thread{
      * @param k Kitchen que indica a referência para a zona partilhada Kitchen a considerar.
      * @param b Bar que indica a referência para a zona partilhada Bar a considerar.
      * @param t Table que indica a referência para a zona partilhada Table a considerar.
-     * @param m GeneralMemory que indica a referência para a zona partilhada GeneralMmory a considerar.
+     * @param m GeneralMemory que indica a referência para a zona partilhada GeneralMemory a considerar.
      */
     public Waiter(Kitchen k, Bar b, Table t, GeneralMemory m){
         st=state.APPRAISING_SITUATION;
@@ -53,21 +53,21 @@ public class Waiter extends Thread{
         return this.st;
     }
     
-    /**
-     * Representa o lifecicle de cada entidade criada deste tipo.
+    /*
+     * Representa o lifecycle de cada entidade criada deste tipo.
      */
     @Override
     public void run(){
         try{
             boolean run=true;
             while(run){
-            	st=state.APPRAISING_SITUATION;
-            	mem.log(this);
                 switch(bar.lookAround()){
                     case presentMenu:
                         st=state.PRESENTING_THE_MENU;
                         mem.log(this);
                         table.saluteTheClient();
+                        st=state.APPRAISING_SITUATION;
+                        mem.log(this);
                         bar.returnToTheBar();
                         
                         break;
@@ -77,6 +77,8 @@ public class Waiter extends Thread{
                         mem.log(this);
                         table.getThePad();
                         kitchen.handTheNoteToTheChef();
+                        st=state.APPRAISING_SITUATION;
+                        mem.log(this);
                         bar.returnToTheBar();
                         break;
 
@@ -86,6 +88,8 @@ public class Waiter extends Thread{
                         
                         kitchen.collectPortion();
                         table.deliverPortion();
+                        st=state.APPRAISING_SITUATION;
+                        mem.log(this);
                         bar.returnToTheBar();
 
                         break;
@@ -95,6 +99,8 @@ public class Waiter extends Thread{
                         mem.log(this);
                         bar.prepareTheBill();
                         table.presentTheBill();
+                        st=state.APPRAISING_SITUATION;
+                        mem.log(this);
                         bar.returnToTheBar();
                         break;
                         
@@ -104,6 +110,8 @@ public class Waiter extends Thread{
                         if(goodbye==N){
                             run=false;
                         }else{
+                            //st=state.APPRAISING_SITUATION;
+                            //mem.log(this);
                             bar.returnToTheBar();
                         }
                         break;

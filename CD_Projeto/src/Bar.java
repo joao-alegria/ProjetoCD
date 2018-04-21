@@ -16,14 +16,14 @@ public class Bar {
 
     /**
      * Construtor de Bar.
-     * @param m GeneralMemory que indica a referência para a zona partilhada GeneralMmory a considerar.
+     * @param m GeneralMemory que indica a referência para a zona partilhada GeneralMemory a considerar.
      */
     public Bar(GeneralMemory m) {
         mem = m;
     }
 
     /**
-     * Simila a espera do Waiter.
+     * Simula espera do Waiter.
      * Waiter bloqueia à espera que necessitem dele e é acordado quando o chamam para fazer alguma ação.
      * Pode acordar com o enter(), o exit(), o signalTheWaiter(), o callTheWaiter(), o alertTheWaiter() e o shouldHaveArrivedEarlier().
      * @return Event que indica qual evento que o Waiter deve satisfazer.
@@ -58,7 +58,7 @@ public class Bar {
      * @throws MyException Exception que aparece quando existe um erro de execução.
      */
     public synchronized void enter() throws MyException{
-        try{signalWaiter();}catch(MyException e){throw e;}
+        try{getWaiterAttention();}catch(MyException e){throw e;}
         this.reset();
         presentMenu = true;
     }
@@ -69,7 +69,7 @@ public class Bar {
      * @throws MyException Exception que aparece quando existe um erro de execução.
      */
     public synchronized void exit() throws MyException{
-        try{signalWaiter();}catch(MyException e){throw e;}
+        try{getWaiterAttention();}catch(MyException e){throw e;}
         this.reset();
         end = true;
     }
@@ -80,7 +80,7 @@ public class Bar {
      * @throws MyException Exception que aparece quando existe um erro de execução.
      */
     public synchronized void callTheWaiter() throws MyException{
-        try{signalWaiter();}catch(MyException e){throw e;}
+        try{getWaiterAttention();}catch(MyException e){throw e;}
         this.reset();
         takeOrder = true;
     }
@@ -92,7 +92,7 @@ public class Bar {
      * @throws MyException Exception que aparece quando existe um erro de execução.
      */
     public synchronized void alertTheWaiter() throws MyException{
-        try{signalWaiter();}catch(MyException e){throw e;}
+        try{getWaiterAttention();}catch(MyException e){throw e;}
         this.reset();
         foodReady = true;
     }
@@ -105,7 +105,7 @@ public class Bar {
      * @throws MyException Exception que aparece quando existe um erro de execução.
      */
     public synchronized void signalTheWaiter() throws MyException{
-        try{signalWaiter();}catch(MyException e){throw e;}
+        try{getWaiterAttention();}catch(MyException e){throw e;}
         this.reset();
         foodReady = true;
     }
@@ -117,7 +117,7 @@ public class Bar {
      * @throws MyException Exception que aparece quando existe um erro de execução.
      */
     public synchronized void shouldHaveArrivedEarlier() throws MyException{
-        try{signalWaiter();}catch(MyException e){throw e;}
+        try{getWaiterAttention();}catch(MyException e){throw e;}
         this.reset();
         getBill = true;
     }
@@ -158,8 +158,8 @@ public class Bar {
     }
 
     /**
-     * Simula o retorno para o Bar. Função usada exclusivamente pelo Waiter no fim de cada evento qu ele executa.
-     * Desbloqueia eventuais entidades que estivessem à espera que o Waiter ficasse desocupado.
+     * Simula o retorno para o Bar. Função usada exclusivamente pelo Waiter no fim de cada evento que ele executa.
+     * Desbloqueia eventuais entidades que estejam à espera que o Waiter ficasse desocupado.
      */
     public synchronized void returnToTheBar() {
         waiter = false;
@@ -168,11 +168,11 @@ public class Bar {
 
     /**
      * Sinaliza o Waiter de que existe um evento a ser atendido.
-     * Função interna usada indiretamente por todas as entidades que pertendam um serviço do Waiter, podendo bloquear caso o Waiter esteja ocupado.
+     * Função interna usada indiretamente por todas as entidades que pretendam um serviço do Waiter, podendo bloquear caso o Waiter esteja ocupado.
      * Caso o Waiter esteja desocupado, ele é acordado, obtendo o evento a executar e fazendo-o.
      * @throws MyException Exception que aparece quando existe um erro de execução.
      */
-    private synchronized void signalWaiter() throws MyException {
+    private synchronized void getWaiterAttention() throws MyException {
         try {
             while (waiter) {
                 wait();

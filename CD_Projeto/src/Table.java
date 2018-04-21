@@ -17,7 +17,7 @@ public class Table {
 
     /**
      * Construtor de Table.
-     * @param m GeneralMemory que indica a referência para a zona partilhada GeneralMmory a considerar.
+     * @param m GeneralMemory que indica a referência para a zona partilhada GeneralMemory a considerar.
      */
     public Table(GeneralMemory m) {
         mem = m;
@@ -25,8 +25,8 @@ public class Table {
     }
 
     /**
-     * Simula o cumprimento ao cliente. Liberta o Estudante que estava à espera que o Waiter lhe apresente o menu.
-     * Bloqueia à espera que o o Estudante leia o menu.
+     * Simula o cumprimento ao cliente. Liberta o Estudante que estava à espera que o Waiter lhe apresentasse o menu.
+     * Bloqueia à espera que o Estudante leia o menu.
      * @throws MyException Exception que aparece quando existe um erro de execução.
      */
     public synchronized void saluteTheClient() throws MyException {
@@ -67,7 +67,7 @@ public class Table {
 
     /**
      * Simula a leitura do menu pelo Estudante. 
-     * Descloqueia o Waiter que ficou à espera que o Estudante lê-se o menu para o Waiter puder voltar ao bar.
+     * Desbloqueia o Waiter que ficou à espera que o Estudante lê-se o menu para o Waiter poder voltar ao bar.
      * @throws MyException Exception que aparece quando existe um erro de execução.
      */
     public synchronized void readTheMenu() throws MyException {
@@ -96,7 +96,7 @@ public class Table {
     }
 
     /**
-     * Devolve se todos já tiverem escolhido a refeição ou não.
+     * Devolve true se todos já tiverem escolhido a refeição ou false, caso contrário.
      * @return boolean que indica se já todos escolheram ou não.
      */
     public synchronized boolean hasEverybodyChosen() {
@@ -167,7 +167,7 @@ public class Table {
 
     /**
      * Simula o serviço de um prato a um Estudante. Em primeiro lugar bloqueia para certificar-se que todos os Estudantes estejam a conversar.
-     * Caso tenha servido o prato a todos os Estudantes, desbloqueia-os a todos os Estudantes que estavam a conversar.
+     * Caso tenha servido o prato a todos os Estudantes, desbloqueia todos os Estudantes que estavam a conversar.
      * @throws MyException Exception que aparece quando existe um erro de execução.
      */
     public synchronized void deliverPortion() throws MyException {
@@ -226,7 +226,7 @@ public class Table {
     }
 
     /**
-     * Simula o inicií de cada Estudante comer um prato.
+     * Simula o início de cada Estudante comer um prato.
      * @throws MyException Exception que aparece quando existe um erro de execução.
      */
     public synchronized void startEating() throws MyException {
@@ -251,7 +251,7 @@ public class Table {
     }
     
     /**
-     * Retorna se todos os Estudantes já acabaram de comer ou não.
+     * Retorna true se todos os Estudantes já acabaram de comer ou false, caso contrário.
      * @return boolean que indica se todos os Estudantes acabaram de comer.
      * @throws MyException Exception que aparece quando existe um erro de execução.
      */
