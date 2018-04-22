@@ -45,7 +45,7 @@ public class DinnerManager {
         
         System.out.print("O programa correrá com 7 Estudantes com 3 pratos para cada um.\nPretende alterar esses valores?(s/n)\n->");
         String control=sc.next();
-        if(control.toLowerCase()=="s" || control.toLowerCase() == "sim"){
+        if(control.toLowerCase().equals("s") || control.toLowerCase().equals("sim")){
             System.out.print("Quantos Estudantes pretende ter?\n->");
             M=sc.nextInt();
             System.out.print("Quantos pratos por Estudante pretende ter?\n->");

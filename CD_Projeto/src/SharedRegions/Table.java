@@ -57,6 +57,7 @@ public class Table {
      */
     public synchronized int enter() throws MyException {
         atTable = atTable + 1;
+        int pos = atTable;
         menu=true;
         try {
             while (enter) {
@@ -65,7 +66,7 @@ public class Table {
         } catch (InterruptedException e) {
             throw new MyException("Error: Can not enter.");
         }
-        return atTable;
+        return pos;
     }
 
     /**

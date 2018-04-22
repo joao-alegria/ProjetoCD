@@ -62,9 +62,9 @@ public class Student extends Thread{
         try{
             walk();
             
+            bar.enter();
             st= state.TAKING_A_SEAT_AT_THE_TABLE;
             mem.log(this);
-            bar.enter();
             int pos=table.enter();
             
             //bar.signalWaiter();
