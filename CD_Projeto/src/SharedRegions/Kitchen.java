@@ -1,3 +1,6 @@
+package SharedRegions;
+import MainPackage.*;
+
 /**
  * Entidade Kitchen. Entidade que representa a zona partilhada Kitchen, onde o Chef irá executar a maioria das suas atividades.
  * É nesta zona partilhada que o Waiter também irá executar algumas das suas operações.
@@ -48,11 +51,11 @@ public class Kitchen {
      * @throws MyException Exception que aparece quando existe um erro de execução.
      */
     public synchronized void startPreparation() throws MyException{
-        /*try {
+        try {
             Thread.sleep((long) (1 + 100 * Math.random()));
         } catch (InterruptedException e) {
             throw new MyException("Error: Not starting the preparation.");
-        }*/
+        }
         ordersDelivered+=1;
         note=false;
         notifyAll();
@@ -63,12 +66,11 @@ public class Kitchen {
      * @throws MyException Exception que aparece quando existe um erro de execução.
      */
     public synchronized void proceedToPresent() throws MyException{
-        /*try {
+        try {
             Thread.sleep((long) (1 + 100 * Math.random()));
         } catch (InterruptedException e) {
             throw new MyException("Error: Not presenting.");
-        }*/
-        //portions+=1;   
+        }  
     }
     
     /**
@@ -92,11 +94,11 @@ public class Kitchen {
      * @throws MyException Exception que aparece quando existe um erro de execução.
      */
     public synchronized void haveNextPortionReady() throws MyException{
-        /*try {
+        try {
             Thread.sleep((long) (1 + 100 * Math.random()));
         } catch (InterruptedException e) {
             throw new MyException("Error: Not having the next portion ready.");
-        }*/
+        }
         portions+=1;
         try{
             while(nextPortion){
@@ -125,11 +127,11 @@ public class Kitchen {
      * @throws MyException Exception que aparece quando existe um erro de execução.
      */
     public synchronized void continuePreparation() throws MyException{
-        /*try {
+        try {
             Thread.sleep((long) (1 + 100 * Math.random()));
         } catch (InterruptedException e) {
             throw new MyException("Error: Not continuing to prepare.");
-        }*/
+        }
         ordersDelivered+=1;
         portionsDelivered=0;
         portions=0;
@@ -140,11 +142,11 @@ public class Kitchen {
      * @throws MyException Exception que aparece quando existe um erro de execução.
      */
     public synchronized void cleanUp()  throws MyException{
-        /*try {
+        try {
             Thread.sleep((long) (1 + 100 * Math.random()));
         } catch (InterruptedException e) {
             throw new MyException("Error: Not cleaning up.");
-        }*/
+        }
     }
 
     /**

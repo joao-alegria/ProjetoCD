@@ -1,3 +1,7 @@
+package Entities;
+import MainPackage.*;
+import SharedRegions.*;
+
 /**
  * Entidade Student. Entidade em que o seu lifecycle replica o de um Estudante, sendo esse o papel desta entidade no problema.
  * @author João Alegria[85048] e Lucas Silva[85036]
@@ -7,7 +11,7 @@ public class Student extends Thread{
     /**
      * Enumerado que mantém listado todos os estados possíveis para o Student.
      */
-    static enum state {
+    public static enum state {
         GOING_TO_THE_RESTAURANT, 
         TAKING_A_SEAT_AT_THE_TABLE, 
         SELECTING_THE_COURSES,
@@ -136,7 +140,7 @@ public class Student extends Thread{
      */
     private void walk() throws MyException{
         try{
-            Thread.sleep((long)(1+300*Math.random()));
+            Thread.sleep((long)(1+100*Math.random()));
         }catch(InterruptedException e){
             throw new MyException("Error: Not walking.");
         }

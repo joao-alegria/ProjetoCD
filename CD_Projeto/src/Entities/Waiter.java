@@ -1,3 +1,8 @@
+package Entities;
+
+
+import MainPackage.*;
+import SharedRegions.*;
 /**
  * Entidade Waiter. Entidade em que o seu lifecycle replica o de um Empregado, sendo esse o papel desta entidade no problema.
  * @author João Alegria[85048] e Lucas Silva[85036]
@@ -7,7 +12,7 @@ public class Waiter extends Thread{
     /**
      * Enumerado que mantém listado todos os estados possíveis para o Waiter.
      */
-    static enum state{
+    public static enum state{
         APPRAISING_SITUATION,
         PRESENTING_THE_MENU,
         TAKING_THE_ORDER,

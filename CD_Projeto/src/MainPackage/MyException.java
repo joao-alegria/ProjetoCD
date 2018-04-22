@@ -1,3 +1,5 @@
+package MainPackage;
+
 /**
  * Exceção criada para manter o código uniforme.
  * @author João Alegria[85048] e Lucas Silva[85036]

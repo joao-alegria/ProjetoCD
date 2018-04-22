@@ -1,3 +1,6 @@
+package SharedRegions;
+import MainPackage.*;
+
 /**
  * Entidade Bar. Entidade que representa a zona partilhada Bar, onde o Waiter irá executar a maioria das suas atividades, sendo a principal esperar por eventos.
  * É nesta zona partilhada que o Chef, assim como os Estudantes irão executar algumas das suas operações, principalmente a sinalização do Waiter.
@@ -150,11 +153,11 @@ public class Bar {
      * @throws MyException Exception que aparece quando existe um erro de execução.
      */
     public synchronized void prepareTheBill() throws MyException {
-        /*try {
+        try {
             Thread.sleep((long) (1 + 100 * Math.random()));
         } catch (InterruptedException e) {
             throw new MyException("Error: Not preparing the bill.");
-        }*/
+        }
     }
 
     /**

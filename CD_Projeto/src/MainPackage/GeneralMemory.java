@@ -1,5 +1,6 @@
-
-import genclass.TextFile;
+package MainPackage;
+import Entities.*;
+import genclass.*;
 
 /**
  * Entidade GeneralMemory.

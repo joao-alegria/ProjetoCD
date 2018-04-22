@@ -1,3 +1,6 @@
+package SharedRegions;
+import MainPackage.*;
+
 /**
  * Entidade Table. Entidade que representa a zona partilhada Table, onde os estudantes irão executar a maioria das suas atividades.
  * É nesta zona partilhada que o Waiter também irá executar algumas das suas operações.
@@ -30,11 +33,11 @@ public class Table {
      * @throws MyException Exception que aparece quando existe um erro de execução.
      */
     public synchronized void saluteTheClient() throws MyException {
-        /*try {
+        try {
             Thread.sleep((long) (1 + 100 * Math.random()));
         } catch (InterruptedException e) {
             throw new MyException("Error: Not saluting client.");
-        }*/
+        }
         enter = false;
         notifyAll();
         
@@ -71,11 +74,11 @@ public class Table {
      * @throws MyException Exception que aparece quando existe um erro de execução.
      */
     public synchronized void readTheMenu() throws MyException {
-        /*try {
+        try {
             Thread.sleep((long) (1 + 100 * Math.random()));
         } catch (InterruptedException e) {
             throw new MyException("Error: Not reading the menu.");
-        }*/
+        }
         menu=false;
         notifyAll();
     }
@@ -86,11 +89,11 @@ public class Table {
      * @throws MyException Exception que aparece quando existe um erro de execução.
      */
     public synchronized void informCompanion() throws MyException {
-        /*try {
+        try {
             Thread.sleep((long) (1 + 100 * Math.random()));
         } catch (InterruptedException e) {
             throw new MyException("Error: Not choosing.");
-        }*/
+        }
         choosen += 1;
         notifyAll();
     }
@@ -138,11 +141,11 @@ public class Table {
      * @throws  MyException Exception que aparece quando existe um erro de execução.
      */
     public synchronized void describeTheOrder() throws MyException {
-        /*try {
+        try {
             Thread.sleep((long) (1 + 100 * Math.random()));
         } catch (InterruptedException e) {
             throw new MyException("Error: Not describing the order.");
-        }*/
+        }
 
         descOrder = false;
         notifyAll();
@@ -171,11 +174,11 @@ public class Table {
      * @throws MyException Exception que aparece quando existe um erro de execução.
      */
     public synchronized void deliverPortion() throws MyException {
-        /*try {
+        try {
             Thread.sleep((long) (1 + 100 * Math.random()));
         } catch (InterruptedException e) {
             throw new MyException("Error: Not serving the portion.");
-        }*/
+        }
         
         try {
             while (chating!=N) {
@@ -230,7 +233,11 @@ public class Table {
      * @throws MyException Exception que aparece quando existe um erro de execução.
      */
     public synchronized void startEating() throws MyException {
-
+        try {
+            Thread.sleep((long) (1 + 100 * Math.random()));
+        } catch (InterruptedException e) {
+            throw new MyException("Error: Not starting to eat.");
+        }
     }
     
     /**
@@ -239,11 +246,6 @@ public class Table {
      * @throws MyException Exception que aparece quando existe um erro de execução.
      */
     public synchronized int endEating() throws MyException {
-        /*try {
-            Thread.sleep((long) (1 + 100 * Math.random()));
-        } catch (InterruptedException e) {
-            throw new MyException("Error: Not eating.");
-        }*/
         finishedEating = finishedEating + 1;
 
         return finishedEating;
@@ -315,11 +317,11 @@ public class Table {
             throw new MyException("Error: Students still in the resturant.");
         }
         
-        /*try {
+        try {
             Thread.sleep((long) (1 + 100 * Math.random()));
         } catch (InterruptedException e) {
             throw new MyException("Error: Not paying the bill.");
-        }*/
+        }
 
         waitPay = false;
         notifyAll();
@@ -342,11 +344,11 @@ public class Table {
      * @throws MyException Exception que aparece quando existe um erro de execução.
      */
     public synchronized void sayGoodbye() throws MyException{
-        /*try {
+        try {
             Thread.sleep((long) (1 + 100 * Math.random()));
         } catch (InterruptedException e) {
             throw new MyException("Error: Not saying goodbye.");
-        }*/
+        }
     }
 
 }

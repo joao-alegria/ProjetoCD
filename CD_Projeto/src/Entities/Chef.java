@@ -1,3 +1,7 @@
+package Entities;
+import MainPackage.*;
+import SharedRegions.*;
+
 /**
  * Entidade Chef. Entidade em que o seu lifecycle replica o de um Chef, sendo esse o papel desta entidade no problema.
  * @author João Alegria[85048] e Lucas Silva[85036]
@@ -7,7 +11,7 @@ public class Chef extends Thread {
     /**
      * Enumerado que mantém listado todos os estados possíveis para o Chef.
      */
-    static enum state {
+    public static enum state {
         WAITING_FOR_AN_ORDER,
         PREPARING_THE_COURSE,
         DISHING_THE_PORTIONS,
